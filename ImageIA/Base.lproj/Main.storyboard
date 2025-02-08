@@ -8,10 +8,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Home-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="ImageIA" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="Home" customModule="ImageIA" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -62,6 +62,7 @@
                     <connections>
                         <outlet property="activityIndicator" destination="5pC-0g-uqr" id="hgc-9d-zdx"/>
                         <outlet property="descriptionImage" destination="1BC-mG-gPR" id="gmV-hC-JIp"/>
+                        <outlet property="imageButton" destination="z5O-Cz-Kfm" id="1Aj-Wh-FtZ"/>
                         <outlet property="imageView" destination="Kg9-1c-yxY" id="CEY-99-XFU"/>
                     </connections>
                 </viewController>

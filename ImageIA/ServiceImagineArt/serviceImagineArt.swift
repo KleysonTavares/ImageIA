@@ -15,30 +15,31 @@ class ServiceImagineArt {
     var body = ""
     var error: Error? = nil
     let boundary = "Boundary-\(UUID().uuidString)"
-    let parameters = [
-        [
-            "key": "prompt",
-            "value": "A futuristic cityscape at night with neon lights",
-            "type": "text"
-        ],
-        [
-            "key": "style",
-            "value": "realistic",
-            "type": "text"
-        ],
-        [
-            "key": "aspect_ratio",
-            "value": "1:1",
-            "type": "text"
-        ],
-        [
-            "key": "seed",
-            "value": "5",
-            "type": "text"
-        ]] as [[String : Any]]
     
     
     func generateImage(prompt: String, completion: @escaping (Data?) -> Void) {
+        let parameters = [
+            [
+                "key": "prompt",
+                "value": prompt,
+                "type": "text"
+            ],
+            [
+                "key": "style",
+                "value": "realistic",
+                "type": "text"
+            ],
+            [
+                "key": "aspect_ratio",
+                "value": "1:1",
+                "type": "text"
+            ],
+            [
+                "key": "seed",
+                "value": "5",
+                "type": "text"
+            ]] as [[String : Any]]
+        
         for param in parameters {
             if param["disabled"] == nil {
                 let paramName = param["key"]!
