@@ -11,8 +11,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var descriptionImage: UITextView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var imageButton: UIButton!
     @IBAction func searchImageButton(_ sender: UIButton) {
-        activityIndicator.isHidden = false
         searchImagineArt()
     }
     
@@ -25,13 +25,18 @@ class ViewController: UIViewController {
     }
     
     func searchImagineArt() {
-        if let savedUrl = UserDefaults.standard.string(forKey: "savedImageURL"), let url = URL(string: savedUrl) {
-            loadImage(from: url) // Carrega a imagem do cache
+        if let savedUrl = UserDefaults.standard.string(forKey: "savedImageURL") {
+            if savedUrl == descriptionImage.text {
+                showErrorAlert(message: "favor, digite uma imagem diferente")
+                    self.endLoading()
+            }
         } else {
             serviceImagineArt.generateImage(prompt: descriptionImage.text) { data in
                 DispatchQueue.main.async {
+                    self.startLoading()
                     if let data = data {
                         self.loadImageImagineArt(from: data)
+                        UserDefaults.standard.set(self.descriptionImage.text, forKey: "savedImageURL")
                     }
                 }
             }
@@ -40,10 +45,6 @@ class ViewController: UIViewController {
     
     
     func loadImageImagineArt(from data: Data) {
-        DispatchQueue.main.async {
-            self.activityIndicator.startAnimating() // Inicia o Spinner
-        }
-        
         DispatchQueue.global().async {
             if let image = UIImage(data: data) {
                 DispatchQueue.main.async {
@@ -76,10 +77,6 @@ class ViewController: UIViewController {
     }
     
     func loadImage(from url: URL) {
-        DispatchQueue.main.async {
-            self.startLoading()
-        }
-        
         DispatchQueue.global().async {
             if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
                 DispatchQueue.main.async {
@@ -127,11 +124,13 @@ class ViewController: UIViewController {
     
     func startLoading() {
         activityIndicator.isHidden = false
-        activityIndicator.startAnimating() // Inicia o Spinner
+        activityIndicator.startAnimating()
+        imageButton.isEnabled = false
     }
     
     func endLoading() {
         activityIndicator.isHidden = true
-        activityIndicator.stopAnimating() // Finaliza o Spinner
+        activityIndicator.stopAnimating()
+        imageButton.isEnabled = true
     }
 }
