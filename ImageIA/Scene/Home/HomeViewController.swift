@@ -7,10 +7,21 @@
 
 import UIKit
 
+protocol HomeViewControllerDelegate: AnyObject {
+    func didTapSearchButton(image: UIImage?)
+}
+
 final class HomeViewController: UIViewController {
     var theView: HomeView? {
         view as? HomeView
     }
+
+//    weak var delegate: HomeCoordinatorDelegate? // Delegate para chamar a navegação
+    
+    weak var delegate: HomeViewControllerDelegate?
+
+    let serviceDall_e = ServiceDall_e()
+    let serviceImagineArt = ServiceImagineArt()
 
     override func loadView() {
         let newView = HomeView()
@@ -18,12 +29,11 @@ final class HomeViewController: UIViewController {
         view = newView
     }
     
-    let serviceDall_e = ServiceDall_e()
-    let serviceImagineArt = ServiceImagineArt()
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        print("🟢 HomeViewController carregada - Delegate é nil? \(delegate == nil)")
+
     }
     
     func searchImagineArt(input: String) {
@@ -38,6 +48,9 @@ final class HomeViewController: UIViewController {
                     self.theView?.startLoading()
                     if let data = data {
                         self.loadImageImagineArt(from: data)
+                        if let image = UIImage(data: data) {
+                            self.goToImage(image: image)
+                        }
                         UserDefaults.standard.set(input, forKey: "savedImageURL")
                     }
                 }
@@ -102,7 +115,19 @@ final class HomeViewController: UIViewController {
             self.present(alert, animated: true, completion: nil)
         }
     }
+    
+    @objc private func goToImage(image: UIImage) {
+        if delegate == nil {
+               print("⚠️ Delegate não foi atribuído corretamente! (HomeViewController)")
+           } else {
+               print("✅ Delegate atribuído corretamente! (HomeViewController)")
+//               delegate?.navigateToImage(with: image) // Chama o Coordinator para navegar
+               delegate?.didTapSearchButton(image: image)  // Exemplo de chamada para o delegate
 
+           }
+        
+      }
+    
 }
 
 

@@ -26,10 +26,6 @@ class HomeView: UIView {
        required init?(coder: NSCoder) {
            fatalError("init(coder:) has not been implemented")
        }
-
-       func setup(labelText: String, buttonTitle: String) {
-           
-       }
     
     @objc internal func buttonPressed() {
         delegate?.didButtonPressed()
