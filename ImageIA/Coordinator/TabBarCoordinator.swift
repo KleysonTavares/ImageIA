@@ -10,32 +10,27 @@ import UIKit
 class TabBarCoordinator: Coordinator {
     var navigationController: UINavigationController
     var tabBarController: UITabBarController
-    var homeCoordinator: HomeCoordinator?  // Referência para o HomeCoordinator
+    var homeCoordinator: HomeCoordinator?
+    var searchNavigationController: UINavigationController? // 🔹 Guarda referência da aba Search
+    var imageViewController: ImageViewController? // 🔹 Guarda referência do ImageViewController
 
-    init() {
+    init(navigationController: UINavigationController) {
+        self.navigationController = navigationController
         self.tabBarController = UITabBarController()
-        self.navigationController = UINavigationController()
     }
 
     func start() {
-        // Instanciando o HomeCoordinator
-        homeCoordinator = HomeCoordinator(navigationController: navigationController)
-        homeCoordinator?.delegate = self  // TabBarCoordinator agora é o delegado de HomeCoordinator
+        homeCoordinator = HomeCoordinator(navigationController: UINavigationController(), tabBarController: tabBarController, tabBarCoordinator: self)
         homeCoordinator?.start()
 
-        let homeNavController = homeCoordinator?.navigationController
-        homeNavController?.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 0)
+        guard let homeNavigationController = homeCoordinator?.navigationController else { return }
+        homeNavigationController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 0)
 
-        // Criar e configurar outras telas
-        let searchViewController = UIViewController()
-        searchViewController.tabBarItem = UITabBarItem(title: "Search", image: UIImage(systemName: "magnifyingglass"), tag: 1)
+        let imageVC = ImageViewController()
+        self.imageViewController = imageVC // 🔹 Armazena referência para passar a imagem depois
+        searchNavigationController = UINavigationController(rootViewController: imageVC)
+        searchNavigationController?.tabBarItem = UITabBarItem(title: "Search", image: UIImage(systemName: "magnifyingglass"), tag: 1)
 
-        tabBarController.viewControllers = [homeNavController!, searchViewController]
-    }
-}
-
-extension TabBarCoordinator: HomeCoordinatorDelegate {
-    func didSelectItem() {
-        print("Item selecionado na TabBarCoordinator")
+        tabBarController.viewControllers = [homeNavigationController, searchNavigationController!]
     }
 }

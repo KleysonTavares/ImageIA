@@ -18,14 +18,14 @@ class AppCoordinator: Coordinator {
 
     init(window: UIWindow?) {
         self.window = window
-        self.navigationController = UINavigationController()  // Esse NavigationController não precisa ser usado se você já tem o NavigationController no HomeCoordinator
+        self.navigationController = UINavigationController()
     }
 
     func start() {
-        let tabBarCoordinator = TabBarCoordinator()  // O TabBarCoordinator vai iniciar a navegação
+        let tabBarCoordinator = TabBarCoordinator(navigationController: navigationController)
         tabBarCoordinator.start()
-
-        window?.rootViewController = tabBarCoordinator.tabBarController  // Aqui estamos usando o TabBarController
+        window?.rootViewController = tabBarCoordinator.tabBarController
         window?.makeKeyAndVisible()
     }
+
 }

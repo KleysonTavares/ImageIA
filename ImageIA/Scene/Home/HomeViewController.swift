@@ -16,7 +16,7 @@ final class HomeViewController: UIViewController {
     var theView: HomeView? {
         view as? HomeView
     }
-    
+
     let serviceDall_e = ServiceDall_e()
     let serviceImagineArt = ServiceImagineArt()
 
@@ -25,37 +25,33 @@ final class HomeViewController: UIViewController {
         newView.delegate = self
         view = newView
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        print("🟢 HomeViewController carregada - Delegate é nil? \(delegate == nil)")
-
     }
-    
+
     func searchImagineArt(input: String) {
-//        if let savedUrl = UserDefaults.standard.string(forKey: "savedImageURL") {
-//            if savedUrl == input {
-//                showErrorAlert(message: "favor, digite uma imagem diferente")
-//                    self.endLoading()
-//            }
-//        } else {
-            serviceImagineArt.generateImage(prompt: input) { data in
-                DispatchQueue.main.async {
-                    self.theView?.startLoading()
-                    if let data = data {
-                        self.loadImageImagineArt(from: data)
-                        if let image = UIImage(data: data) {
-                            self.goToImage(image: image)
-                        }
-                        UserDefaults.standard.set(input, forKey: "savedImageURL")
+        //        if let savedUrl = UserDefaults.standard.string(forKey: "savedImageURL") {
+        //            if savedUrl == input {
+        //                showErrorAlert(message: "favor, digite uma imagem diferente")
+        //                    self.endLoading()
+        //            }
+        //        } else {
+        serviceImagineArt.generateImage(prompt: input) { data in
+            DispatchQueue.main.async {
+                self.theView?.startLoading()
+                if let data = data {
+                    self.loadImageImagineArt(from: data)
+                    if let image = UIImage(data: data) {
+                        self.goToImage(image: image)
                     }
+                    UserDefaults.standard.set(input, forKey: "savedImageURL")
                 }
             }
-//        }
+        }
+        //        }
     }
-    
-    
+
     func loadImageImagineArt(from data: Data) {
         DispatchQueue.global().async {
             if let image = UIImage(data: data) {
@@ -71,8 +67,7 @@ final class HomeViewController: UIViewController {
             }
         }
     }
-    
-    
+
     func searchImageDall_e() {
         if let savedUrl = UserDefaults.standard.string(forKey: "savedImageURL"), let url = URL(string: savedUrl) {
             loadImageDall_e(from: url) // Carrega a imagem do cache
@@ -87,7 +82,7 @@ final class HomeViewController: UIViewController {
             }
         }
     }
-    
+
     func loadImageDall_e(from url: URL) {
         DispatchQueue.global().async {
             if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
@@ -103,22 +98,20 @@ final class HomeViewController: UIViewController {
             }
         }
     }
-    
+
     func showErrorAlert(message: String) {
         let alert = UIAlertController(title: "Erro", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        
         DispatchQueue.main.async {
             self.present(alert, animated: true, completion: nil)
         }
     }
-    
-    @objc private func goToImage(image: UIImage) {
-        delegate?.didTapSearchButton(image: image)        
-      }
-    
-}
 
+    @objc private func goToImage(image: UIImage) {
+        delegate?.didTapSearchButton(image: image)
+    }
+
+}
 
 extension HomeViewController: HomeViewDelegate {
     func didButtonPressed() {

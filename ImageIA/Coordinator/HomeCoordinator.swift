@@ -11,24 +11,28 @@ protocol HomeCoordinatorDelegate: AnyObject {
     func didSelectItem()
 }
 
-class HomeCoordinator: Coordinator, HomeViewControllerDelegate {
+class HomeCoordinator: Coordinator {
     var navigationController: UINavigationController
-    var delegate: HomeCoordinatorDelegate?
-    
-    func didTapSearchButton(image: UIImage?) {
-        let imageViewController = ImageViewController()
-        imageViewController.receivedImage = image  // Passando a imagem para a ImageViewController
-        navigationController.pushViewController(imageViewController, animated: true)
-    }
+    var tabBarController: UITabBarController
+    var tabBarCoordinator: TabBarCoordinator
 
-    init(navigationController: UINavigationController) {
+    init(navigationController: UINavigationController, tabBarController: UITabBarController, tabBarCoordinator: TabBarCoordinator) {
         self.navigationController = navigationController
+        self.tabBarController = tabBarController
+        self.tabBarCoordinator = tabBarCoordinator
     }
 
     func start() {
         let homeVC = HomeViewController()
-        homeVC.delegate = self  // HomeCoordinator agora é o delegate do HomeViewController
-        navigationController.pushViewController(homeVC, animated: false)
+        homeVC.delegate = self
+        navigationController.viewControllers = [homeVC]
     }
+}
 
+extension HomeCoordinator: HomeViewControllerDelegate {
+    func didTapSearchButton(image: UIImage?) {
+        guard let imageVC = tabBarCoordinator.imageViewController else { return }
+        imageVC.image = image
+        tabBarController.selectedIndex = 1
+    }
 }
