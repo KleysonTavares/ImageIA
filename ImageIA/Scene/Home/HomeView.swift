@@ -67,7 +67,7 @@ extension HomeView: ViewCode {
         button.layer.borderColor = UIColor.lightGray.cgColor
         button.layer.borderWidth = 2
         button.layer.cornerRadius = 10
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 20)
         
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
 
@@ -85,15 +85,15 @@ extension HomeView: ViewCode {
             imageView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10),
             imageView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             imageView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            imageView.heightAnchor.constraint(equalToConstant: 500),
             
             inputPromptTextView.topAnchor.constraint(equalTo:imageView.bottomAnchor, constant: 10),
             inputPromptTextView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             inputPromptTextView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
             inputPromptTextView.bottomAnchor.constraint(equalTo: button.topAnchor, constant: -20),
             
-            button.heightAnchor.constraint(equalToConstant: 40),
-            button.widthAnchor.constraint(equalToConstant: 140),
+            button.heightAnchor.constraint(equalToConstant: 50),
+            button.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            button.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             button.centerXAnchor.constraint(equalTo: centerXAnchor),
             button.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -10)
         ])

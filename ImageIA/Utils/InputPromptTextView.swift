@@ -12,7 +12,7 @@ class InputPromptTextView: UIView, UITextViewDelegate {
     var textView = UITextView()
     var placeholderLabel = UILabel()
     let characterCountLabel = UILabel()
-    let maxCharacters = 500
+    let maxCharacters = 200
     let fixedHeight: CGFloat = 150  // Altura fixa para o campo de texto
     
     var placeholder: String = "Digite algo..." {
@@ -37,7 +37,7 @@ class InputPromptTextView: UIView, UITextViewDelegate {
         textView.layer.borderColor = UIColor.lightGray.cgColor
         textView.layer.borderWidth = 2
         textView.layer.cornerRadius = 10
-        textView.font = UIFont.systemFont(ofSize: 16)
+        textView.font = UIFont.systemFont(ofSize: 22)
         textView.isScrollEnabled = true  // Mantém o scroll ativado caso ultrapasse o tamanho
         textView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(textView)
@@ -45,7 +45,7 @@ class InputPromptTextView: UIView, UITextViewDelegate {
         // Configuração do Placeholder
         placeholderLabel.text = placeholder
         placeholderLabel.textColor = .lightGray
-        placeholderLabel.font = UIFont.systemFont(ofSize: 16)
+        placeholderLabel.font = UIFont.systemFont(ofSize: 22)
         placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(placeholderLabel)
         
