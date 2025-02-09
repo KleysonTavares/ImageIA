@@ -19,7 +19,6 @@ class HomeCoordinator: Coordinator, HomeViewControllerDelegate {
         let imageViewController = ImageViewController()
         imageViewController.receivedImage = image  // Passando a imagem para a ImageViewController
         navigationController.pushViewController(imageViewController, animated: true)
-        print("Botão foi pressionado na HomeViewController - didTapSearchButton")
     }
 
     init(navigationController: UINavigationController) {
@@ -29,14 +28,7 @@ class HomeCoordinator: Coordinator, HomeViewControllerDelegate {
     func start() {
         let homeVC = HomeViewController()
         homeVC.delegate = self  // HomeCoordinator agora é o delegate do HomeViewController
-        print("📢 HomeViewController criada no HomeCoordinator - Delegate atribuído? \(homeVC.delegate != nil)")
-
         navigationController.pushViewController(homeVC, animated: false)
-        print("📢 Pilha de view controllers após push: \(navigationController.viewControllers.count)")
     }
 
-    // Implementando o método do protocolo HomeViewControllerDelegate
-    func didTapButton() {
-        print("Botão foi pressionado na HomeViewController - didTapButton")
-    }
 }

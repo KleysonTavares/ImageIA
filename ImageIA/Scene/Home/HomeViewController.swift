@@ -12,14 +12,11 @@ protocol HomeViewControllerDelegate: AnyObject {
 }
 
 final class HomeViewController: UIViewController {
+    weak var delegate: HomeViewControllerDelegate?
     var theView: HomeView? {
         view as? HomeView
     }
-
-//    weak var delegate: HomeCoordinatorDelegate? // Delegate para chamar a navegação
     
-    weak var delegate: HomeViewControllerDelegate?
-
     let serviceDall_e = ServiceDall_e()
     let serviceImagineArt = ServiceImagineArt()
 
@@ -78,12 +75,12 @@ final class HomeViewController: UIViewController {
     
     func searchImageDall_e() {
         if let savedUrl = UserDefaults.standard.string(forKey: "savedImageURL"), let url = URL(string: savedUrl) {
-            loadImage(from: url) // Carrega a imagem do cache
+            loadImageDall_e(from: url) // Carrega a imagem do cache
         } else {
             serviceDall_e.generateImage(prompt: theView?.inputPromptTextView.textView.text ?? String()) { imageUrl in
                 DispatchQueue.main.async {
                     if let imageUrl = imageUrl, let url = URL(string: imageUrl) {
-                        self.loadImage(from: url)
+                        self.loadImageDall_e(from: url)
                         UserDefaults.standard.set(imageUrl, forKey: "savedImageURL")
                     }
                 }
@@ -91,7 +88,7 @@ final class HomeViewController: UIViewController {
         }
     }
     
-    func loadImage(from url: URL) {
+    func loadImageDall_e(from url: URL) {
         DispatchQueue.global().async {
             if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
                 DispatchQueue.main.async {
@@ -117,15 +114,7 @@ final class HomeViewController: UIViewController {
     }
     
     @objc private func goToImage(image: UIImage) {
-        if delegate == nil {
-               print("⚠️ Delegate não foi atribuído corretamente! (HomeViewController)")
-           } else {
-               print("✅ Delegate atribuído corretamente! (HomeViewController)")
-//               delegate?.navigateToImage(with: image) // Chama o Coordinator para navegar
-               delegate?.didTapSearchButton(image: image)  // Exemplo de chamada para o delegate
-
-           }
-        
+        delegate?.didTapSearchButton(image: image)        
       }
     
 }
