@@ -37,35 +37,20 @@ final class HomeViewController: UIViewController {
         //                    self.endLoading()
         //            }
         //        } else {
+
         serviceImagineArt.generateImage(prompt: input) { data in
             DispatchQueue.main.async {
                 self.theView?.startLoading()
                 if let data = data {
-                    self.loadImageImagineArt(from: data)
                     if let image = UIImage(data: data) {
                         self.goToImage(image: image)
                     }
                     UserDefaults.standard.set(input, forKey: "savedImageURL")
-                }
+                } else {
+                    self.showErrorAlert(message: "Não foi possível gerar a imagem. Tente novamente mais tarde.")                }
             }
         }
         //        }
-    }
-
-    func loadImageImagineArt(from data: Data) {
-        DispatchQueue.global().async {
-            if let image = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    self.theView?.imageView.image = image
-                    self.theView?.endLoading()
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self.theView?.endLoading()
-                    self.showErrorAlert(message: "Não foi possível gerar a imagem. Tente novamente mais tarde.")
-                }
-            }
-        }
     }
 
     func searchImageDall_e() {
@@ -87,7 +72,6 @@ final class HomeViewController: UIViewController {
         DispatchQueue.global().async {
             if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
                 DispatchQueue.main.async {
-                    self.theView?.imageView.image = image
                     self.theView?.endLoading()
                 }
             } else {

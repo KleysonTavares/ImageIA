@@ -32,5 +32,9 @@ class TabBarCoordinator: Coordinator {
         searchNavigationController?.tabBarItem = UITabBarItem(title: "Search", image: UIImage(systemName: "magnifyingglass"), tag: 1)
 
         tabBarController.viewControllers = [homeNavigationController, searchNavigationController!]
+
+        tabBarController.tabBar.tintColor = .purple  // Cor do ícone ativo
+        tabBarController.tabBar.unselectedItemTintColor = .gray  // Cor dos ícones inativos
+        tabBarController.tabBar.backgroundColor = .white  // Cor de fundo da TabBar
     }
 }

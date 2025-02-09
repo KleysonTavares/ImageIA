@@ -12,7 +12,6 @@ protocol HomeViewDelegate: AnyObject {
 }
 
 class HomeView: UIView {
-    var imageView = UIImageView()
     var inputPromptTextView = InputPromptTextView()
     var button = UIButton()
     var loading = UIActivityIndicatorView()
@@ -49,9 +48,6 @@ extension HomeView: ViewCode {
     func configure() {
         loading.isHidden = true
         
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.backgroundColor = .gray
-        
         inputPromptTextView.translatesAutoresizingMaskIntoConstraints = false
         inputPromptTextView.placeholder = "de asas a sua imaginação..."
         
@@ -70,7 +66,6 @@ extension HomeView: ViewCode {
     }
     
     func addSubviews() {
-        addSubview(imageView)
         addSubview(inputPromptTextView)
         addSubview(button)
         addSubview(loading)
@@ -78,11 +73,7 @@ extension HomeView: ViewCode {
 
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10),
-            imageView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            imageView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            
-            inputPromptTextView.topAnchor.constraint(equalTo:imageView.bottomAnchor, constant: 10),
+//            inputPromptTextView.topAnchor.constraint(equalTo:imageView.bottomAnchor, constant: 10),
             inputPromptTextView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             inputPromptTextView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
             inputPromptTextView.bottomAnchor.constraint(equalTo: button.topAnchor, constant: -20),

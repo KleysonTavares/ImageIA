@@ -28,7 +28,6 @@ class ImageViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         title = "Imagem gerada"
-        updateImage()
     }
 
     func loadImageImagineArt(from image: UIImage) {

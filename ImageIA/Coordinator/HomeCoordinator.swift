@@ -33,6 +33,7 @@ extension HomeCoordinator: HomeViewControllerDelegate {
     func didTapSearchButton(image: UIImage?) {
         guard let imageVC = tabBarCoordinator.imageViewController else { return }
         imageVC.image = image
+        imageVC.updateImage()
         tabBarController.selectedIndex = 1
     }
 }
