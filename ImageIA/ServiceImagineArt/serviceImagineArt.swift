@@ -71,7 +71,7 @@ class ServiceImagineArt {
         let postData = body.data(using: .utf8)
         
         var request = URLRequest(url: URL(string: "https://api.vyro.ai/v2/image/generations")!,timeoutInterval: Double.infinity)
-        request.addValue("Bearer vk-92EXelKV38TeZWEsjBKvEBlEMDhwG3ZgpWgoHcJ2fWr3xD0", forHTTPHeaderField: "Authorization")
+        request.addValue("Bearer \(Secrets.ImagineIAAPIKey)", forHTTPHeaderField: "Authorization")
         request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         
         request.httpMethod = "POST"
