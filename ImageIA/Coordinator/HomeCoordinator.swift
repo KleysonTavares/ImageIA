@@ -31,9 +31,13 @@ class HomeCoordinator: Coordinator {
 
 extension HomeCoordinator: HomeViewControllerDelegate {
     func didTapSearchButton(image: UIImage?) {
-        guard let imageVC = tabBarCoordinator.imageViewController else { return }
-        imageVC.image = image
-        imageVC.updateImage()
-        tabBarController.selectedIndex = 1
+        DispatchQueue.global().async {
+            DispatchQueue.main.async {
+                guard let imageVC = self.tabBarCoordinator.imageViewController else { return }
+                imageVC.image = image
+                imageVC.updateImage()
+                self.tabBarController.selectedIndex = 1
+            }
+        }
     }
 }

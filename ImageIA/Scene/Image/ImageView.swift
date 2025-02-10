@@ -29,7 +29,6 @@ class ImageView: UIView {
 extension ImageView: ViewCode {
     func configure() {
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.backgroundColor = .gray
         imageView.frame = bounds
         imageView.contentMode = .scaleAspectFit
     }

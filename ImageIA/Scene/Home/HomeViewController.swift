@@ -21,6 +21,7 @@ final class HomeViewController: UIViewController {
     let serviceImagineArt = ServiceImagineArt()
 
     override func loadView() {
+        super.loadView()
         let newView = HomeView()
         newView.delegate = self
         view = newView
@@ -37,20 +38,21 @@ final class HomeViewController: UIViewController {
         //                    self.endLoading()
         //            }
         //        } else {
-
+        
         serviceImagineArt.generateImage(prompt: input) { data in
-            DispatchQueue.main.async {
-                self.theView?.startLoading()
-                if let data = data {
-                    if let image = UIImage(data: data) {
-                        self.goToImage(image: image)
-                    }
-                    UserDefaults.standard.set(input, forKey: "savedImageURL")
-                } else {
-                    self.showErrorAlert(message: "Não foi possível gerar a imagem. Tente novamente mais tarde.")                }
+            self.startLoading()
+            //            DispatchQueue.global().async {
+            //                DispatchQueue.main.async {
+            //                    self.theView?.startLoading()
+            if let data = data {
+                if let image = UIImage(data: data) {
+                    self.goToImage(image: image)
+                }
+                UserDefaults.standard.set(input, forKey: "savedImageURL")
+            } else {
+                self.showErrorAlert(message: "Não foi possível gerar a imagem. Tente novamente mais tarde.")
             }
         }
-        //        }
     }
 
     func searchImageDall_e() {
@@ -72,11 +74,11 @@ final class HomeViewController: UIViewController {
         DispatchQueue.global().async {
             if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
                 DispatchQueue.main.async {
-                    self.theView?.endLoading()
+                    self.stopLoading()
                 }
             } else {
                 DispatchQueue.main.async {
-                    self.theView?.endLoading()
+                    self.stopLoading()
                     self.showErrorAlert(message: "Não foi possível gerar a imagem. Tente novamente mais tarde.")
                 }
             }
@@ -93,6 +95,21 @@ final class HomeViewController: UIViewController {
 
     @objc private func goToImage(image: UIImage) {
         delegate?.didTapSearchButton(image: image)
+        stopLoading()
+    }
+
+    func startLoading() {
+        DispatchQueue.main.async { [weak self] in
+            self?.theView?.loading.startAnimating()
+            self?.theView?.button.isEnabled = false
+        }
+    }
+
+    func stopLoading() {
+        DispatchQueue.main.async { [weak self] in
+            self?.theView?.loading.stopAnimating()
+            self?.theView?.button.isEnabled = true
+        }
     }
 
 }
