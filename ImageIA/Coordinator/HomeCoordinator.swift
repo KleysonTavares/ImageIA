@@ -31,13 +31,13 @@ class HomeCoordinator: Coordinator {
 
 extension HomeCoordinator: HomeViewControllerDelegate {
     func didTapSearchButton(image: UIImage?) {
-        DispatchQueue.global().async {
-            DispatchQueue.main.async {
-                guard let imageVC = self.tabBarCoordinator.imageViewController else { return }
-                imageVC.image = image
-                imageVC.updateImage()
-                self.tabBarController.selectedIndex = 1
-            }
+        DispatchQueue.main.async {
+            let modalVC = ImageModalViewController()
+            modalVC.image = image
+            modalVC.modalPresentationStyle = .overFullScreen // Para cobrir a tela inteira com fundo transparente
+            modalVC.modalTransitionStyle = .crossDissolve   // Efeito suave na transição
+
+            self.navigationController.present(modalVC, animated: true, completion: nil)
         }
     }
 }
