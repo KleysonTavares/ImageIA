@@ -65,7 +65,13 @@ class ImageModalViewController: UIViewController {
         view.backgroundColor = UIColor.black.withAlphaComponent(0.8)
         setupLayout()
     }
-    
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        guard let imageTemp = image else { return }
+        ImageSaveManager.saveImageToAppAlbum(imageTemp)
+       }
+
     private func setupLayout() {
         view.addSubview(imageView)
         view.addSubview(shareButton)

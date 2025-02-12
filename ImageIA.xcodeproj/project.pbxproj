@@ -292,6 +292,7 @@
 				DEVELOPMENT_TEAM = 48VXLBS5Z4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ImageIA/Info.plist;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "permitir que o $(EXECUTABLE_NAME) salve imagens";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -319,6 +320,7 @@
 				DEVELOPMENT_TEAM = 48VXLBS5Z4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ImageIA/Info.plist;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "permitir que o $(EXECUTABLE_NAME) salve imagens";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
