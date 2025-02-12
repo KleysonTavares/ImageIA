@@ -6,59 +6,85 @@
 //
 
 import UIKit
+import Photos
 
-class ImageViewController: UIViewController {
-    var theView: ImageView? {
-        view as? ImageView
+class ImageViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    private var images: [UIImage] = []
+    private var theView: ImageView {
+        return view as! ImageView
     }
-
-    var image: UIImage? {
-        didSet {
-            updateImage()
-        }
-    }
-
+    
     override func loadView() {
-        let newView = ImageView()
-        newView.delegate = self
-        view = newView
+        view = ImageView()
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
-        title = "Imagem gerada"
+        title = "Minhas Imagens"
+        
+        theView.collectionView.delegate = self
+        theView.collectionView.dataSource = self
+        theView.collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadImagesFromAlbum()
     }
 
-    func loadImageImagineArt(from image: UIImage) {
-        DispatchQueue.global().async {
-            DispatchQueue.main.async {
-                self.theView?.imageView.image = image
+    private func loadImagesFromAlbum() {
+        ImageSaveManager.createAlbumIfNeeded { album in
+            guard let album = album else { return }
+            
+            let screenSize: CGRect = UIScreen.main.bounds
+            let screenWidth = (screenSize.width - 40) / 2
+            
+            let fetchOptions = PHFetchOptions()
+            fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)] // Ordena por data decrescente
+            
+            let assets = PHAsset.fetchAssets(in: album, options: fetchOptions)
+            let imageManager = PHCachingImageManager()
+            let targetSize = CGSize(width: screenWidth, height: screenWidth)
+            
+            var newImages: [UIImage] = []
+            
+            assets.enumerateObjects { asset, _, _ in
+                imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: nil) { image, _ in
+                    if let image = image {
+                        newImages.append(image)
+                        
+                        // Apenas recarrega se houver novas imagens
+                        if newImages.count != self.images.count {
+                            self.images = newImages
+                            DispatchQueue.main.async {
+                                self.theView.collectionView.reloadData()
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 
-    func updateImage() {
-        if let image = image {
-            loadImageImagineArt(from: image)
-        } else {
-            showErrorAlert(message: "Não foi possível gerar a imagem. Tente novamente mais tarde.")
+
+        func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+            return images.count
+        }
+
+        func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+            cell.backgroundColor = .white
+
+            let imageView = UIImageView(image: images[indexPath.item])
+            imageView.contentMode = .scaleAspectFill
+            imageView.clipsToBounds = true
+            imageView.frame = cell.bounds
+            imageView.layer.cornerRadius = 10
+
+            cell.contentView.subviews.forEach { $0.removeFromSuperview() } // Remove imagens antigas
+            cell.contentView.addSubview(imageView)
+            
+            return cell
         }
     }
-
-    func showErrorAlert(message: String) {
-        let alert = UIAlertController(title: "Erro", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        
-        DispatchQueue.main.async {
-            self.present(alert, animated: true, completion: nil)
-        }
-    }
-
-}
-
-extension ImageViewController: ImageViewDelegate {
-    func didButtonPressed() {
-    }
-
-}

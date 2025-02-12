@@ -11,38 +11,47 @@ protocol ImageViewDelegate: AnyObject {
     func didButtonPressed()
 }
 
-class ImageView: UIView {
-    var imageView = UIImageView()
-    weak var delegate: ImageViewDelegate?
+final class ImageView: UIView {
 
-       init() {
-           super.init(frame: .zero)
-           setupView()
-       }
+    let collectionView: UICollectionView
 
-       required init?(coder: NSCoder) {
-           fatalError("init(coder:) has not been implemented")
-       }
+    override init(frame: CGRect) {
+        let screenSize: CGRect = UIScreen.main.bounds
+        let screenItem = (screenSize.width - 40) / 2
 
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: screenItem, height: screenItem)
+        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = 8
+
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+
+        super.init(frame: frame)
+        setupView()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 extension ImageView: ViewCode {
     func configure() {
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.frame = bounds
-        imageView.contentMode = .scaleAspectFit
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = .white
+        collectionView.layer.cornerRadius = 10
     }
-    
+
     func addSubviews() {
-        addSubview(imageView)
+        addSubview(collectionView)
     }
 
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10),
-            imageView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            imageView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            imageView.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -10)
+            collectionView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10),
+            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
 

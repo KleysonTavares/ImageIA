@@ -53,7 +53,7 @@ final class HomeViewController: UIViewController {
     
     func promptDuplicate(prompt: String) -> Bool {
         if let savedUrl = UserDefaults.standard.string(forKey: "savedImageURL") {
-            if savedUrl == prompt {
+            if savedUrl == prompt || prompt.isEmpty {
                 showErrorAlert(message: "favor, digite uma imagem diferente")
                 stopLoading()
             } else {
