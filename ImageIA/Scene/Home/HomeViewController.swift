@@ -17,6 +17,7 @@ final class HomeViewController: UIViewController {
         view as? HomeView
     }
 
+    let styleViewController = StyleViewController()
     let serviceDall_e = ServiceDall_e()
     let serviceImagineArt = ServiceImagineArt()
 
@@ -31,6 +32,10 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
         setupKeyboardObservers()
         setupTapGesture()
+        addChild(styleViewController)
+        theView?.styleContainerView.addSubview(styleViewController.view)
+        styleViewController.didMove(toParent: self)
+        configLayoutStyle()
     }
     
     deinit {
@@ -147,6 +152,16 @@ final class HomeViewController: UIViewController {
             self?.theView?.loading.stopAnimating()
             self?.theView?.button.isEnabled = true
         }
+    }
+    
+    func configLayoutStyle() {
+        styleViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            styleViewController.view.topAnchor.constraint(equalTo: theView?.styleContainerView.topAnchor ?? view.topAnchor),
+            styleViewController.view.leadingAnchor.constraint(equalTo: theView?.styleContainerView.leadingAnchor ?? view.leadingAnchor),
+            styleViewController.view.trailingAnchor.constraint(equalTo: theView?.styleContainerView.trailingAnchor ?? view.trailingAnchor),
+            styleViewController.view.bottomAnchor.constraint(equalTo: theView?.styleContainerView.bottomAnchor ?? view.bottomAnchor)
+        ])
     }
 
 }

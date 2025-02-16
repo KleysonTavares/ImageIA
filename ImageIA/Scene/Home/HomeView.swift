@@ -15,6 +15,7 @@ class HomeView: UIView {
     var inputPromptTextView = InputPromptTextView()
     var button = UIButton()
     var loading = UIActivityIndicatorView()
+    var styleContainerView = UIView()
     weak var delegate: HomeViewDelegate?
 
        init() {
@@ -33,11 +34,20 @@ class HomeView: UIView {
 }
 
 extension HomeView: ViewCode {
+    func addSubviews() {
+        addSubview(styleContainerView)
+        addSubview(loading)
+        addSubview(inputPromptTextView)
+        addSubview(button)
+    }
+
     func configure() {
+        styleContainerView.translatesAutoresizingMaskIntoConstraints = false
+        styleContainerView.backgroundColor = .clear
+
         loading.translatesAutoresizingMaskIntoConstraints = false
         loading.style = .large
         loading.color = .purple
-
         
         inputPromptTextView.translatesAutoresizingMaskIntoConstraints = false
         inputPromptTextView.placeholder = "de asas a sua imaginação..."
@@ -52,17 +62,16 @@ extension HomeView: ViewCode {
         button.titleLabel?.font = UIFont.systemFont(ofSize: 20)
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
     }
-    
-    func addSubviews() {
-        addSubview(loading)
-        addSubview(inputPromptTextView)
-        addSubview(button)
-    }
 
     func setupConstraints() {
         NSLayoutConstraint.activate([
             loading.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             loading.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            
+            styleContainerView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            styleContainerView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            styleContainerView.heightAnchor.constraint(equalToConstant: 140),
+            styleContainerView.bottomAnchor.constraint(equalTo: inputPromptTextView.topAnchor, constant: -20),
             
             inputPromptTextView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             inputPromptTextView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
