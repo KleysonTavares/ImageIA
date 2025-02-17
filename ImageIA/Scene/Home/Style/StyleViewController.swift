@@ -15,7 +15,11 @@ class StyleViewController: UIViewController, UICollectionViewDataSource, UIColle
     private let options: [Option] = [
         Option(style: "realistic", image: "realistic", label: "Realista"),
         Option(style: "anime", image: "anime", label: "Anime"),
-        Option(style: "imagine-turbo", image: "imagine-turbo", label: "Versátil")
+        Option(style: "sdxl-1.0", image: "sdxl-1.0", label: "Hiper Realista"),
+        Option(style: "flux-schnell", image: "flux-schnell", label: "Alto detalhe"),
+        Option(style: "imagine-turbo", image: "imagine-turbo", label: "Versátil"),
+        Option(style: "flux-dev", image: "flux-dev", label: "Criativa"),
+        Option(style: "flux-dev-fast", image: "flux-dev-fast", label: "Simples")
     ]
     
     override func viewDidLoad() {
