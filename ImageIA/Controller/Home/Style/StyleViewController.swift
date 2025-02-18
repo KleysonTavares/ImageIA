@@ -24,37 +24,7 @@ class StyleViewController: UIViewController, UICollectionViewDataSource, UIColle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupCollectionView()
-    }
-    
-    private func setupCollectionView() {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 100, height: 120)
-        layout.minimumInteritemSpacing = 10
-        layout.minimumLineSpacing = 10
-        
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.register(StyleCustomCell.self, forCellWithReuseIdentifier: StyleCustomCell.identifier)
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.backgroundColor = .white
-        collectionView.showsHorizontalScrollIndicator = false
-        collectionView.isUserInteractionEnabled = true
-        
-        // Adiciona um gesto de toque para depuração
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-        collectionView.addGestureRecognizer(tapGesture)
-        
-        view.addSubview(collectionView)
-        
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
+        setupView()
     }
 
     @objc private func handleTap(_ gesture: UITapGestureRecognizer) {
@@ -95,5 +65,45 @@ class StyleViewController: UIViewController, UICollectionViewDataSource, UIColle
             cell.setSelected(true)
         }
         let selectedOption = options[indexPath.row]
+    }
+}
+
+extension StyleViewController: ViewCode {
+    func addSubviews() {
+        view.addSubview(collectionView)
+    }
+
+    func configure() {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.itemSize = CGSize(width: 100, height: 120)
+        layout.minimumInteritemSpacing = 10
+        layout.minimumLineSpacing = 10
+
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.register(StyleCustomCell.self, forCellWithReuseIdentifier: StyleCustomCell.identifier)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.backgroundColor = .white
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.isUserInteractionEnabled = true
+
+        // Adiciona um gesto de toque para depuração
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        collectionView.addGestureRecognizer(tapGesture)
+    }
+
+    func setupConstraints() {
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+
+    func setupStyle() {
+        view.backgroundColor = .white
     }
 }
