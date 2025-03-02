@@ -18,14 +18,14 @@ class StyleViewController: UIViewController, UICollectionViewDataSource, UIColle
     private var collectionView: UICollectionView!
     private var selectedIndexPath: IndexPath? = IndexPath(row: 0, section: 0) // Pré-seleciona a primeira célula
     
-    private let options: [Option] = [
-        Option(style: "realistic", image: "realistic", label: "Realista"),
-        Option(style: "anime", image: "anime", label: "Anime"),
-        Option(style: "sdxl-1.0", image: "sdxl-1.0", label: "Realista 2"),
-        Option(style: "flux-schnell", image: "flux-schnell", label: "Alto detalhe"),
-        Option(style: "imagine-turbo", image: "imagine-turbo", label: "Versátil"),
-        Option(style: "flux-dev", image: "flux-dev", label: "Criativa"),
-        Option(style: "flux-dev-fast", image: "flux-dev-fast", label: "Simples")
+    private let options: [Style] = [
+        Style(style: "realistic", image: "realistic", label: "Realista"),
+        Style(style: "anime", image: "anime", label: "Anime"),
+        Style(style: "sdxl-1.0", image: "sdxl-1.0", label: "Realista 2"),
+        Style(style: "flux-schnell", image: "flux-schnell", label: "Alto detalhe"),
+        Style(style: "imagine-turbo", image: "imagine-turbo", label: "Versátil"),
+        Style(style: "flux-dev", image: "flux-dev", label: "Criativa"),
+        Style(style: "flux-dev-fast", image: "flux-dev-fast", label: "Simples")
     ]
     
     override func viewDidLoad() {

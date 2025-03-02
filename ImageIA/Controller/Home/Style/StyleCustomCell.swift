@@ -24,7 +24,7 @@ class StyleCustomCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configureCell(with option: Option) {
+    func configureCell(with option: Style) {
         imageView.image = UIImage(named: option.image)
         label.text = option.label
     }
