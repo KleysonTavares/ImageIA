@@ -13,6 +13,7 @@ protocol HomeViewControllerDelegate: AnyObject {
 
 final class HomeViewController: UIViewController {
     weak var delegate: HomeViewControllerDelegate?
+    var inputPrompt: String?
     var theView: HomeView? {
         view as? HomeView
     }
@@ -36,6 +37,7 @@ final class HomeViewController: UIViewController {
         theView?.styleContainerView.addSubview(styleViewController.view)
         styleViewController.didMove(toParent: self)
         configLayoutStyle()
+        configAdManager()
     }
     
     deinit {
@@ -73,29 +75,29 @@ final class HomeViewController: UIViewController {
             NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         }
 
-        @objc private func keyboardWillShow(_ notification: Notification) {
-            if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
-                let keyboardHeight = keyboardFrame.height
-                UIView.animate(withDuration: 0.3) {
-                    self.view.frame.origin.y = -keyboardHeight
-                }
-            }
-        }
-
-        @objc private func keyboardWillHide(_ notification: Notification) {
+    @objc private func keyboardWillShow(_ notification: Notification) {
+        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+            let keyboardHeight = keyboardFrame.height
             UIView.animate(withDuration: 0.3) {
-                self.view.frame.origin.y = 0
+                self.view.frame.origin.y = -keyboardHeight
             }
         }
+    }
 
-       private func setupTapGesture() {
-           let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-           view.addGestureRecognizer(tapGesture)
-       }
+    @objc private func keyboardWillHide(_ notification: Notification) {
+        UIView.animate(withDuration: 0.3) {
+            self.view.frame.origin.y = 0
+        }
+    }
 
-       @objc private func dismissKeyboard() {
-           view.endEditing(true)
-       }
+    private func setupTapGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
+    }
+
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
 
     func searchImageDall_e() {
         if let savedUrl = UserDefaults.standard.string(forKey: "savedImageURL"), let url = URL(string: savedUrl) {
@@ -163,14 +165,25 @@ final class HomeViewController: UIViewController {
             styleViewController.view.bottomAnchor.constraint(equalTo: theView?.styleContainerView.bottomAnchor ?? view.bottomAnchor)
         ])
     }
+    
+    func configAdManager() {
+        AdManager.shared.onAdDidDismiss = { [weak self] in
+            guard let self = self else { return }
+            if let input = self.inputPrompt {
+                self.searchImagineArt(input: input)
+            }
+        }
+        AdManager.shared.loadInterstitialAd() // Carrega o anúncio ao iniciar
+    }
 
 }
 
 extension HomeViewController: HomeViewDelegate {
     func didButtonPressed() {
+        AdManager.shared.showInterstitialAd(from: self) // Exibe o anúncio
         dismissKeyboard()
-        if let inputPrompt = theView?.inputPromptTextView.textView.text {
-            searchImagineArt(input: inputPrompt)
+        if let input = theView?.inputPromptTextView.textView.text {
+            inputPrompt = input
         }
     }
 
