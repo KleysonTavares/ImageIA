@@ -14,6 +14,7 @@ protocol HomeViewControllerDelegate: AnyObject {
 final class HomeViewController: UIViewController {
     weak var delegate: HomeViewControllerDelegate?
     var inputPrompt: String?
+    var selectedStyle: String = "realistic"
     var theView: HomeView? {
         view as? HomeView
     }
@@ -38,16 +39,17 @@ final class HomeViewController: UIViewController {
         styleViewController.didMove(toParent: self)
         configLayoutStyle()
         configAdManager()
+        styleViewController.delegate = self
     }
     
     deinit {
             NotificationCenter.default.removeObserver(self)
         }
 
-    func searchImagineArt(input: String) {
+    func searchImagineArt(input: String, style: String) {
         startLoading()
         if promptDuplicate(prompt: input) == false {
-            serviceImagineArt.generateImage(prompt: input) { data in
+            serviceImagineArt.generateImage(prompt: input, style: style) { data in
                 if let data = data, let image = UIImage(data: data) {
                     self.goToImage(image: image)
                     UserDefaults.standard.set(input, forKey: "savedImageURL")
@@ -170,10 +172,10 @@ final class HomeViewController: UIViewController {
         AdManager.shared.onAdDidDismiss = { [weak self] in
             guard let self = self else { return }
             if let input = self.inputPrompt {
-                self.searchImagineArt(input: input)
+                self.searchImagineArt(input: input, style: selectedStyle)
             }
         }
-        AdManager.shared.loadInterstitialAd() // Carrega o anúncio ao iniciar
+        AdManager.shared.loadInterstitialAd()
     }
 
 }
@@ -185,6 +187,13 @@ extension HomeViewController: HomeViewDelegate {
         if let input = theView?.inputPromptTextView.textView.text {
             inputPrompt = input
         }
+    }
+
+}
+
+extension HomeViewController: StyleViewControllerDelegate {
+    func didSelectStyle(_ style: String) {
+        selectedStyle = style
     }
 
 }

@@ -15,9 +15,9 @@ class ServiceImagineArt {
     var body = ""
     var error: Error? = nil
     let boundary = "Boundary-\(UUID().uuidString)"
-    
-    
-    func generateImage(prompt: String, completion: @escaping (Data?) -> Void) {
+    let seed = String(Int.random(in: 1...10))
+
+    func generateImage(prompt: String, style: String, completion: @escaping (Data?) -> Void) {
         let parameters = [
             [
                 "key": "prompt",
@@ -26,7 +26,7 @@ class ServiceImagineArt {
             ],
             [
                 "key": "style",
-                "value": "realistic",
+                "value": style,
                 "type": "text"
             ],
             [
@@ -36,7 +36,7 @@ class ServiceImagineArt {
             ],
             [
                 "key": "seed",
-                "value": "5",
+                "value": seed,
                 "type": "text"
             ]] as [[String : Any]]
         

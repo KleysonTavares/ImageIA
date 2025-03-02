@@ -7,8 +7,14 @@
 
 import UIKit
 
+protocol StyleViewControllerDelegate: AnyObject {
+    func didSelectStyle(_ style: String)
+}
+
 class StyleViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
+    weak var delegate: StyleViewControllerDelegate? // Adicione esta propriedade
+
     private var collectionView: UICollectionView!
     private var selectedIndexPath: IndexPath? = IndexPath(row: 0, section: 0) // Pré-seleciona a primeira célula
     
@@ -65,6 +71,7 @@ class StyleViewController: UIViewController, UICollectionViewDataSource, UIColle
             cell.setSelected(true)
         }
         let selectedOption = options[indexPath.row]
+        delegate?.didSelectStyle(selectedOption.style)
     }
 }
 
