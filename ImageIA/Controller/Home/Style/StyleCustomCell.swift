@@ -46,6 +46,7 @@ extension StyleCustomCell: ViewCode {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 20
 
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
@@ -54,7 +55,7 @@ extension StyleCustomCell: ViewCode {
 
         layer.borderWidth = 2
         layer.borderColor = UIColor.clear.cgColor
-        layer.cornerRadius = 8
+        layer.cornerRadius = 20
     }
 
     func setupStyle() {

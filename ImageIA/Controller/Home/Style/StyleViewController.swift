@@ -15,7 +15,7 @@ class StyleViewController: UIViewController, UICollectionViewDataSource, UIColle
     private let options: [Option] = [
         Option(style: "realistic", image: "realistic", label: "Realista"),
         Option(style: "anime", image: "anime", label: "Anime"),
-        Option(style: "sdxl-1.0", image: "sdxl-1.0", label: "Hiper Realista"),
+        Option(style: "sdxl-1.0", image: "sdxl-1.0", label: "Realista 2"),
         Option(style: "flux-schnell", image: "flux-schnell", label: "Alto detalhe"),
         Option(style: "imagine-turbo", image: "imagine-turbo", label: "Versátil"),
         Option(style: "flux-dev", image: "flux-dev", label: "Criativa"),
