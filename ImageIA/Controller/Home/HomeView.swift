@@ -16,6 +16,7 @@ class HomeView: UIView {
     var button = UIButton()
     var loading = UIActivityIndicatorView()
     var styleContainerView = UIView()
+    var aspectRatioContainerView = UIView()
     weak var delegate: HomeViewDelegate?
 
        init() {
@@ -35,6 +36,7 @@ class HomeView: UIView {
 
 extension HomeView: ViewCode {
     func addSubviews() {
+        addSubview(aspectRatioContainerView)
         addSubview(styleContainerView)
         addSubview(loading)
         addSubview(inputPromptTextView)
@@ -42,6 +44,9 @@ extension HomeView: ViewCode {
     }
 
     func configure() {
+        aspectRatioContainerView.translatesAutoresizingMaskIntoConstraints = false
+        aspectRatioContainerView.backgroundColor = .clear
+        
         styleContainerView.translatesAutoresizingMaskIntoConstraints = false
         styleContainerView.backgroundColor = .clear
 
@@ -67,7 +72,12 @@ extension HomeView: ViewCode {
         NSLayoutConstraint.activate([
             loading.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             loading.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            
+
+            aspectRatioContainerView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            aspectRatioContainerView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            aspectRatioContainerView.heightAnchor.constraint(equalToConstant: 140),
+            aspectRatioContainerView.bottomAnchor.constraint(equalTo: styleContainerView.topAnchor, constant: -20),
+
             styleContainerView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             styleContainerView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
             styleContainerView.heightAnchor.constraint(equalToConstant: 140),

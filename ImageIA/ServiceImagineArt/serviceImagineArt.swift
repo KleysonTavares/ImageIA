@@ -14,10 +14,10 @@ class ServiceImagineArt {
     var semaphore = DispatchSemaphore (value: 0)
     var body = ""
     var error: Error? = nil
+    var seed = String(Int.random(in: 1...10))
     let boundary = "Boundary-\(UUID().uuidString)"
-    let seed = String(Int.random(in: 1...10))
 
-    func generateImage(prompt: String, style: String, completion: @escaping (Data?) -> Void) {
+    func generateImage(prompt: String, style: String, aspectRatio: String, completion: @escaping (Data?) -> Void) {
         let parameters = [
             [
                 "key": "prompt",
@@ -31,7 +31,7 @@ class ServiceImagineArt {
             ],
             [
                 "key": "aspect_ratio",
-                "value": "1:1",
+                "value": aspectRatio,
                 "type": "text"
             ],
             [

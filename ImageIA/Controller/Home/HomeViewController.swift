@@ -15,11 +15,13 @@ final class HomeViewController: UIViewController {
     weak var delegate: HomeViewControllerDelegate?
     var inputPrompt: String?
     var selectedStyle: String = "realistic"
+    var selectedAspectRatio: String = "1:1"
     var theView: HomeView? {
         view as? HomeView
     }
 
     let styleViewController = StyleViewController()
+    let aspectRatioViewController = AspectRatioViewController()
     let serviceDall_e = ServiceDall_e()
     let serviceImagineArt = ServiceImagineArt()
 
@@ -34,22 +36,30 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
         setupKeyboardObservers()
         setupTapGesture()
+        
         addChild(styleViewController)
         theView?.styleContainerView.addSubview(styleViewController.view)
         styleViewController.didMove(toParent: self)
-        configLayoutStyle()
-        configAdManager()
         styleViewController.delegate = self
+
+        addChild(aspectRatioViewController)
+        theView?.aspectRatioContainerView.addSubview(aspectRatioViewController.view)
+        aspectRatioViewController.didMove(toParent: self)
+        aspectRatioViewController.delegate = self
+
+        configLayoutStyle()
+        configLayoutAspectRatio()
+        configAdManager()
     }
     
     deinit {
             NotificationCenter.default.removeObserver(self)
         }
 
-    func searchImagineArt(input: String, style: String) {
+    func searchImagineArt(input: String, style: String, aspectRatio: String) {
         startLoading()
         if promptDuplicate(prompt: input) == false {
-            serviceImagineArt.generateImage(prompt: input, style: style) { data in
+            serviceImagineArt.generateImage(prompt: input, style: style, aspectRatio: aspectRatio) { data in
                 if let data = data, let image = UIImage(data: data) {
                     self.goToImage(image: image)
                     UserDefaults.standard.set(input, forKey: "savedImageURL")
@@ -168,11 +178,21 @@ final class HomeViewController: UIViewController {
         ])
     }
     
+    func configLayoutAspectRatio() {
+        aspectRatioViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            aspectRatioViewController.view.topAnchor.constraint(equalTo: theView?.aspectRatioContainerView.topAnchor ?? view.topAnchor),
+            aspectRatioViewController.view.leadingAnchor.constraint(equalTo: theView?.aspectRatioContainerView.leadingAnchor ?? view.leadingAnchor),
+            aspectRatioViewController.view.trailingAnchor.constraint(equalTo: theView?.aspectRatioContainerView.trailingAnchor ?? view.trailingAnchor),
+            aspectRatioViewController.view.bottomAnchor.constraint(equalTo: theView?.aspectRatioContainerView.bottomAnchor ?? view.bottomAnchor)
+        ])
+    }
+    
     func configAdManager() {
         AdManager.shared.onAdDidDismiss = { [weak self] in
             guard let self = self else { return }
             if let input = self.inputPrompt {
-                self.searchImagineArt(input: input, style: selectedStyle)
+                self.searchImagineArt(input: input, style: selectedStyle, aspectRatio: selectedAspectRatio)
             }
         }
         AdManager.shared.loadInterstitialAd()
@@ -195,5 +215,10 @@ extension HomeViewController: StyleViewControllerDelegate {
     func didSelectStyle(_ style: String) {
         selectedStyle = style
     }
+}
 
+extension HomeViewController: AspectRatioViewControllerDelegate {
+    func didSelectAspectRatio(_ aspectRatio: String) {
+        selectedAspectRatio = aspectRatio
+    }
 }
