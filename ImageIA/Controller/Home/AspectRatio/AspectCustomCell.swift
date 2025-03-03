@@ -24,9 +24,9 @@ class AspectRatioCustomCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configureCell(with option: AspectRatio) {
-        imageView.image = UIImage(named: option.image)
-        label.text = option.label
+    func configureCell(with aspectRatio: AspectRatio) {
+        imageView.image = UIImage(named: aspectRatio.image)
+        label.text = aspectRatio.label
     }
 
     func setSelected(_ selected: Bool) {

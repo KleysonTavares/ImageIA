@@ -8,45 +8,41 @@
 import UIKit
 
 protocol HomeViewDelegate: AnyObject {
-    func didButtonPressed()
+    func didSeachButtonPressed()
 }
 
-class HomeView: UIView {
-    var inputPromptTextView = InputPromptTextView()
-    var button = UIButton()
-    var loading = UIActivityIndicatorView()
-    var styleContainerView = UIView()
-    var aspectRatioContainerView = UIView()
+final class HomeView: UIView {
+    let inputPromptTextView = InputPromptTextView()
+    let seachButton = UIButton()
+    let loading = UIActivityIndicatorView()
+    let styleContainerView = UIView()
+    let aspectRatioButton = UIButton()
     weak var delegate: HomeViewDelegate?
 
-       init() {
-           super.init(frame: .zero)
-           setupView()
-       }
+    init() {
+        super.init(frame: .zero)
+        setupView()
+    }
 
-       required init?(coder: NSCoder) {
-           fatalError("init(coder:) has not been implemented")
-       }
-    
-    @objc internal func buttonPressed() {
-        delegate?.didButtonPressed()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
+    @objc internal func buttonPressed() {
+        delegate?.didSeachButtonPressed()
+    }
 }
 
 extension HomeView: ViewCode {
     func addSubviews() {
-        addSubview(aspectRatioContainerView)
+        addSubview(aspectRatioButton)
         addSubview(styleContainerView)
         addSubview(loading)
         addSubview(inputPromptTextView)
-        addSubview(button)
+        addSubview(seachButton)
     }
 
     func configure() {
-        aspectRatioContainerView.translatesAutoresizingMaskIntoConstraints = false
-        aspectRatioContainerView.backgroundColor = .clear
-        
         styleContainerView.translatesAutoresizingMaskIntoConstraints = false
         styleContainerView.backgroundColor = .clear
 
@@ -57,15 +53,19 @@ extension HomeView: ViewCode {
         inputPromptTextView.translatesAutoresizingMaskIntoConstraints = false
         inputPromptTextView.placeholder = "de asas a sua imaginação..."
         
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Gerar Imagem", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .purple
-        button.layer.borderColor = UIColor.lightGray.cgColor
-        button.layer.borderWidth = 2
-        button.layer.cornerRadius = 10
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 20)
-        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+        seachButton.translatesAutoresizingMaskIntoConstraints = false
+        seachButton.setTitle("Gerar Imagem", for: .normal)
+        seachButton.setTitleColor(.white, for: .normal)
+        seachButton.backgroundColor = .purple
+        seachButton.layer.borderColor = UIColor.lightGray.cgColor
+        seachButton.layer.borderWidth = 2
+        seachButton.layer.cornerRadius = 10
+        seachButton.titleLabel?.font = UIFont.systemFont(ofSize: 20)
+        seachButton.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+        
+        aspectRatioButton.translatesAutoresizingMaskIntoConstraints = false
+        aspectRatioButton.setImage(UIImage(named: "aspect_1_1"), for: .normal)
+        aspectRatioButton.tintColor = .black
     }
 
     func setupConstraints() {
@@ -73,10 +73,10 @@ extension HomeView: ViewCode {
             loading.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             loading.centerYAnchor.constraint(equalTo: self.centerYAnchor),
 
-            aspectRatioContainerView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            aspectRatioContainerView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            aspectRatioContainerView.heightAnchor.constraint(equalToConstant: 140),
-            aspectRatioContainerView.bottomAnchor.constraint(equalTo: styleContainerView.topAnchor, constant: -20),
+            aspectRatioButton.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            aspectRatioButton.widthAnchor.constraint(equalToConstant: 100),
+            aspectRatioButton.heightAnchor.constraint(equalToConstant: 100),
+            aspectRatioButton.bottomAnchor.constraint(equalTo: styleContainerView.topAnchor, constant: -20),
 
             styleContainerView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             styleContainerView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
@@ -85,13 +85,13 @@ extension HomeView: ViewCode {
             
             inputPromptTextView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             inputPromptTextView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            inputPromptTextView.bottomAnchor.constraint(equalTo: button.topAnchor, constant: -20),
+            inputPromptTextView.bottomAnchor.constraint(equalTo: seachButton.topAnchor, constant: -20),
             
-            button.heightAnchor.constraint(equalToConstant: 50),
-            button.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            button.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            button.centerXAnchor.constraint(equalTo: centerXAnchor),
-            button.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -10)
+            seachButton.heightAnchor.constraint(equalToConstant: 50),
+            seachButton.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            seachButton.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            seachButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            seachButton.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -10),
         ])
     }
 

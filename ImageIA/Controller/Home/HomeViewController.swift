@@ -16,45 +16,32 @@ final class HomeViewController: UIViewController {
     var inputPrompt: String?
     var selectedStyle: String = "realistic"
     var selectedAspectRatio: String = "1:1"
-    var theView: HomeView? {
-        view as? HomeView
-    }
 
-    let styleViewController = StyleViewController()
-    let aspectRatioViewController = AspectRatioViewController()
-    let serviceDall_e = ServiceDall_e()
-    let serviceImagineArt = ServiceImagineArt()
+    private let homeView = HomeView() // Instância da HomeView
+    private let styleViewController = StyleViewController()
+    private let serviceDall_e = ServiceDall_e()
+    private let serviceImagineArt = ServiceImagineArt()
 
     override func loadView() {
         super.loadView()
-        let newView = HomeView()
-        newView.delegate = self
-        view = newView
+        view = homeView
+        homeView.delegate = self
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupKeyboardObservers()
         setupTapGesture()
-        
-        addChild(styleViewController)
-        theView?.styleContainerView.addSubview(styleViewController.view)
-        styleViewController.didMove(toParent: self)
-        styleViewController.delegate = self
-
-        addChild(aspectRatioViewController)
-        theView?.aspectRatioContainerView.addSubview(aspectRatioViewController.view)
-        aspectRatioViewController.didMove(toParent: self)
-        aspectRatioViewController.delegate = self
-
+        addStyleViewController()
+        homeView.aspectRatioButton.addTarget(self, action: #selector(showAspectRatioModal), for: .touchUpInside)
+        updateAspectRatioButtonIcon() // Atualiza o ícone inicial
         configLayoutStyle()
-        configLayoutAspectRatio()
         configAdManager()
     }
     
     deinit {
-            NotificationCenter.default.removeObserver(self)
-        }
+        NotificationCenter.default.removeObserver(self)
+    }
 
     func searchImagineArt(input: String, style: String, aspectRatio: String) {
         startLoading()
@@ -83,9 +70,9 @@ final class HomeViewController: UIViewController {
     }
 
     private func setupKeyboardObservers() {
-            NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-            NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
-        }
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
 
     @objc private func keyboardWillShow(_ notification: Notification) {
         if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
@@ -115,7 +102,7 @@ final class HomeViewController: UIViewController {
         if let savedUrl = UserDefaults.standard.string(forKey: "savedImageURL"), let url = URL(string: savedUrl) {
             loadImageDall_e(from: url) // Carrega a imagem do cache
         } else {
-            serviceDall_e.generateImage(prompt: theView?.inputPromptTextView.textView.text ?? String()) { imageUrl in
+            serviceDall_e.generateImage(prompt: homeView.inputPromptTextView.textView.text ?? String()) { imageUrl in
                 DispatchQueue.main.async {
                     if let imageUrl = imageUrl, let url = URL(string: imageUrl) {
                         self.loadImageDall_e(from: url)
@@ -156,35 +143,25 @@ final class HomeViewController: UIViewController {
 
     func startLoading() {
         DispatchQueue.main.async { [weak self] in
-            self?.theView?.loading.startAnimating()
-            self?.theView?.button.isEnabled = false
+            self?.homeView.loading.startAnimating()
+            self?.homeView.seachButton.isEnabled = false
         }
     }
 
     func stopLoading() {
         DispatchQueue.main.async { [weak self] in
-            self?.theView?.loading.stopAnimating()
-            self?.theView?.button.isEnabled = true
+            self?.homeView.loading.stopAnimating()
+            self?.homeView.seachButton.isEnabled = true
         }
     }
     
     func configLayoutStyle() {
         styleViewController.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            styleViewController.view.topAnchor.constraint(equalTo: theView?.styleContainerView.topAnchor ?? view.topAnchor),
-            styleViewController.view.leadingAnchor.constraint(equalTo: theView?.styleContainerView.leadingAnchor ?? view.leadingAnchor),
-            styleViewController.view.trailingAnchor.constraint(equalTo: theView?.styleContainerView.trailingAnchor ?? view.trailingAnchor),
-            styleViewController.view.bottomAnchor.constraint(equalTo: theView?.styleContainerView.bottomAnchor ?? view.bottomAnchor)
-        ])
-    }
-    
-    func configLayoutAspectRatio() {
-        aspectRatioViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            aspectRatioViewController.view.topAnchor.constraint(equalTo: theView?.aspectRatioContainerView.topAnchor ?? view.topAnchor),
-            aspectRatioViewController.view.leadingAnchor.constraint(equalTo: theView?.aspectRatioContainerView.leadingAnchor ?? view.leadingAnchor),
-            aspectRatioViewController.view.trailingAnchor.constraint(equalTo: theView?.aspectRatioContainerView.trailingAnchor ?? view.trailingAnchor),
-            aspectRatioViewController.view.bottomAnchor.constraint(equalTo: theView?.aspectRatioContainerView.bottomAnchor ?? view.bottomAnchor)
+            styleViewController.view.topAnchor.constraint(equalTo: homeView.styleContainerView.topAnchor),
+            styleViewController.view.leadingAnchor.constraint(equalTo: homeView.styleContainerView.leadingAnchor),
+            styleViewController.view.trailingAnchor.constraint(equalTo: homeView.styleContainerView.trailingAnchor),
+            styleViewController.view.bottomAnchor.constraint(equalTo: homeView.styleContainerView.bottomAnchor)
         ])
     }
     
@@ -197,18 +174,37 @@ final class HomeViewController: UIViewController {
         }
         AdManager.shared.loadInterstitialAd()
     }
+    
+    func addStyleViewController() {
+        addChild(styleViewController)
+        homeView.styleContainerView.addSubview(styleViewController.view)
+        styleViewController.didMove(toParent: self)
+        styleViewController.delegate = self
+    }
+    
+    private func updateAspectRatioButtonIcon() {
+           let options = AspectRatioViewController().aspectRatios
+           if let selectedAspectRatio = options.first(where: { $0.aspectRatio == self.selectedAspectRatio }) {
+               homeView.aspectRatioButton.setImage(UIImage(named: selectedAspectRatio.image), for: .normal)
+           }
+       }
 
+       @objc private func showAspectRatioModal() {
+           let modalVC = AspectRatioViewController()
+           modalVC.delegate = self
+           modalVC.modalPresentationStyle = .formSheet
+           present(modalVC, animated: true, completion: nil)
+       }
 }
 
 extension HomeViewController: HomeViewDelegate {
-    func didButtonPressed() {
+    func didSeachButtonPressed() {
         AdManager.shared.showInterstitialAd(from: self) // Exibe o anúncio
         dismissKeyboard()
-        if let input = theView?.inputPromptTextView.textView.text {
+        if let input = homeView.inputPromptTextView.textView.text {
             inputPrompt = input
         }
     }
-
 }
 
 extension HomeViewController: StyleViewControllerDelegate {
@@ -220,5 +216,6 @@ extension HomeViewController: StyleViewControllerDelegate {
 extension HomeViewController: AspectRatioViewControllerDelegate {
     func didSelectAspectRatio(_ aspectRatio: String) {
         selectedAspectRatio = aspectRatio
+        updateAspectRatioButtonIcon()
     }
 }
