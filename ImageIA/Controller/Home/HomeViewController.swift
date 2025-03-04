@@ -9,6 +9,7 @@ import UIKit
 
 protocol HomeViewControllerDelegate: AnyObject {
     func didTapSearchButton(image: UIImage?)
+    func didTapAspecRatioButton()
 }
 
 final class HomeViewController: UIViewController {
@@ -17,7 +18,7 @@ final class HomeViewController: UIViewController {
     var selectedStyle: String = "realistic"
     var selectedAspectRatio: String = "1:1"
 
-    private let homeView = HomeView() // Instância da HomeView
+    private let homeView = HomeView()
     private let styleViewController = StyleViewController()
     private let serviceDall_e = ServiceDall_e()
     private let serviceImagineArt = ServiceImagineArt()
@@ -98,8 +99,6 @@ final class HomeViewController: UIViewController {
         view.endEditing(true)
     }
 
-    
-
     func showErrorAlert(message: String) {
         let alert = UIAlertController(title: "Atenção", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
@@ -162,10 +161,7 @@ final class HomeViewController: UIViewController {
        }
 
        @objc private func showAspectRatioModal() {
-           let modalVC = AspectRatioViewController()
-           modalVC.delegate = self
-           modalVC.modalPresentationStyle = .formSheet
-           present(modalVC, animated: true, completion: nil)
+           delegate?.didTapAspecRatioButton()
        }
 }
 
