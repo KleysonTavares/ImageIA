@@ -9,7 +9,7 @@ import UIKit
 
 protocol HomeViewControllerDelegate: AnyObject {
     func didTapSearchButton(image: UIImage?)
-    func didTapAspecRatioButton()
+    func didTapAspecRatioButton(aspectRatio: String)
 }
 
 final class HomeViewController: UIViewController {
@@ -161,7 +161,7 @@ final class HomeViewController: UIViewController {
        }
 
        @objc private func showAspectRatioModal() {
-           delegate?.didTapAspecRatioButton()
+           delegate?.didTapAspecRatioButton(aspectRatio: selectedAspectRatio)
        }
 }
 

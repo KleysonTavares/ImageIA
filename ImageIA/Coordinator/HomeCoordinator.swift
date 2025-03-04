@@ -42,12 +42,13 @@ extension HomeCoordinator: HomeViewControllerDelegate {
         }
     }
 
-    func didTapAspecRatioButton() {
+    func didTapAspecRatioButton(aspectRatio: String) {
         DispatchQueue.main.async {
             let modalVC = AspectRatioViewController()
             modalVC.preferredContentSize = CGSize(width: 300, height: 400)
             modalVC.modalPresentationStyle = .formSheet
             modalVC.delegate = self.homeViewController
+            modalVC.selectedAspectRatio = aspectRatio
             self.homeViewController?.present(modalVC, animated: true, completion: nil)
         }
     }

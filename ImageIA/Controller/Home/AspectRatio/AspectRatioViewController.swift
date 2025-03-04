@@ -14,9 +14,9 @@ protocol AspectRatioViewControllerDelegate: AnyObject {
 final class AspectRatioViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     weak var delegate: AspectRatioViewControllerDelegate?
-
     private let aspectRatioView = AspectRatioView()
-    private var selectedIndexPath: IndexPath? = IndexPath(row: 0, section: 0)
+    private var selectedIndexPath: IndexPath?
+    var selectedAspectRatio: String?
 
     let aspectRatios: [AspectRatio] = [
         AspectRatio(aspectRatio: "1:1", image: "aspect_1_1", label: "1:1"),
@@ -36,6 +36,13 @@ final class AspectRatioViewController: UIViewController, UICollectionViewDataSou
         aspectRatioView.collectionView.dataSource = self
         aspectRatioView.collectionView.delegate = self
         aspectRatioView.closeButton.addTarget(self, action: #selector(closeModal), for: .touchUpInside)
+
+        if let selectedAspectRatio = selectedAspectRatio,
+           let index = aspectRatios.firstIndex(where: { $0.aspectRatio == selectedAspectRatio }) {
+            selectedIndexPath = IndexPath(row: index, section: 0)
+        } else {
+            selectedIndexPath = IndexPath(row: 0, section: 0)
+        }
     }
 
     @objc private func closeModal() {
@@ -57,7 +64,7 @@ final class AspectRatioViewController: UIViewController, UICollectionViewDataSou
     }
 
     // MARK: - UICollectionViewDelegate
-    
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let previousIndexPath = selectedIndexPath,
            let previousCell = collectionView.cellForItem(at: previousIndexPath) as? AspectRatioCustomCell {
