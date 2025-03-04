@@ -12,11 +12,12 @@ protocol AspectRatioViewControllerDelegate: AnyObject {
 }
 
 final class AspectRatioViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+
     weak var delegate: AspectRatioViewControllerDelegate?
-    
-    private var collectionView: UICollectionView!
+
+    private let aspectRatioView = AspectRatioView()
     private var selectedIndexPath: IndexPath? = IndexPath(row: 0, section: 0)
-    
+
     let aspectRatios: [AspectRatio] = [
         AspectRatio(aspectRatio: "1:1", image: "aspect_1_1", label: "1:1"),
         AspectRatio(aspectRatio: "3:2", image: "aspect_3_2", label: "3:2"),
@@ -25,43 +26,28 @@ final class AspectRatioViewController: UIViewController, UICollectionViewDataSou
         AspectRatio(aspectRatio: "16:9", image: "aspect_16_9", label: "16:9"),
         AspectRatio(aspectRatio: "9:16", image: "aspect_9_16", label: "9:16")
     ]
-    
+
+    override func loadView() {
+        self.view = aspectRatioView
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupView()
+        aspectRatioView.collectionView.dataSource = self
+        aspectRatioView.collectionView.delegate = self
+        aspectRatioView.closeButton.addTarget(self, action: #selector(closeModal), for: .touchUpInside)
     }
 
-    private func setupView() {
-        view.backgroundColor = .white
-        
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.itemSize = CGSize(width: 100, height: 120)
-        layout.minimumInteritemSpacing = 10
-        layout.minimumLineSpacing = 10
-
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(AspectRatioCustomCell.self, forCellWithReuseIdentifier: AspectRatioCustomCell.identifier)
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.backgroundColor = .white
-
-        view.addSubview(collectionView)
-        NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
-        ])
+    @objc private func closeModal() {
+        dismiss(animated: true, completion: nil)
     }
-    
+
     // MARK: - UICollectionViewDataSource
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return aspectRatios.count
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AspectRatioCustomCell.identifier, for: indexPath) as! AspectRatioCustomCell
         let aspectRatio = aspectRatios[indexPath.row]
@@ -69,21 +55,21 @@ final class AspectRatioViewController: UIViewController, UICollectionViewDataSou
         cell.setSelected(selectedIndexPath == indexPath)
         return cell
     }
-    
+
     // MARK: - UICollectionViewDelegate
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let previousIndexPath = selectedIndexPath {
-            if let previousCell = collectionView.cellForItem(at: previousIndexPath) as? AspectRatioCustomCell {
-                previousCell.setSelected(false)
-            }
+        if let previousIndexPath = selectedIndexPath,
+           let previousCell = collectionView.cellForItem(at: previousIndexPath) as? AspectRatioCustomCell {
+            previousCell.setSelected(false)
         }
         selectedIndexPath = indexPath
+
         if let cell = collectionView.cellForItem(at: indexPath) as? AspectRatioCustomCell {
             cell.setSelected(true)
         }
+
         let selectedAspectRatio = aspectRatios[indexPath.row]
         delegate?.didSelectAspectRatio(selectedAspectRatio.aspectRatio)
-        dismiss(animated: true, completion: nil)
     }
 }
