@@ -98,35 +98,7 @@ final class HomeViewController: UIViewController {
         view.endEditing(true)
     }
 
-    func searchImageDall_e() {
-        if let savedUrl = UserDefaults.standard.string(forKey: "savedImageURL"), let url = URL(string: savedUrl) {
-            loadImageDall_e(from: url) // Carrega a imagem do cache
-        } else {
-            serviceDall_e.generateImage(prompt: homeView.inputPromptTextView.textView.text ?? String()) { imageUrl in
-                DispatchQueue.main.async {
-                    if let imageUrl = imageUrl, let url = URL(string: imageUrl) {
-                        self.loadImageDall_e(from: url)
-                        UserDefaults.standard.set(imageUrl, forKey: "savedImageURL")
-                    }
-                }
-            }
-        }
-    }
-
-    func loadImageDall_e(from url: URL) {
-        DispatchQueue.global().async {
-            if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    self.stopLoading()
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self.stopLoading()
-                    self.showErrorAlert(message: "Não foi possível gerar a imagem. Tente novamente mais tarde.")
-                }
-            }
-        }
-    }
+    
 
     func showErrorAlert(message: String) {
         let alert = UIAlertController(title: "Atenção", message: message, preferredStyle: .alert)
