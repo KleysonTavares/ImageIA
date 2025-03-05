@@ -18,7 +18,7 @@ final class AspectRatioViewController: UIViewController, UICollectionViewDataSou
     private var selectedIndexPath: IndexPath?
     var selectedAspectRatio: String?
 
-    let aspectRatios: [AspectRatio] = [
+    let listAspectRatios: [AspectRatio] = [
         AspectRatio(aspectRatio: "1:1", image: "aspect_1_1", label: "1:1"),
         AspectRatio(aspectRatio: "3:2", image: "aspect_3_2", label: "3:2"),
         AspectRatio(aspectRatio: "4:3", image: "aspect_4_3", label: "4:3"),
@@ -38,7 +38,7 @@ final class AspectRatioViewController: UIViewController, UICollectionViewDataSou
         aspectRatioView.closeButton.addTarget(self, action: #selector(closeModal), for: .touchUpInside)
 
         if let selectedAspectRatio = selectedAspectRatio,
-           let index = aspectRatios.firstIndex(where: { $0.aspectRatio == selectedAspectRatio }) {
+           let index = listAspectRatios.firstIndex(where: { $0.aspectRatio == selectedAspectRatio }) {
             selectedIndexPath = IndexPath(row: index, section: 0)
         } else {
             selectedIndexPath = IndexPath(row: 0, section: 0)
@@ -52,12 +52,12 @@ final class AspectRatioViewController: UIViewController, UICollectionViewDataSou
     // MARK: - UICollectionViewDataSource
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return aspectRatios.count
+        return listAspectRatios.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AspectRatioCustomCell.identifier, for: indexPath) as! AspectRatioCustomCell
-        let aspectRatio = aspectRatios[indexPath.row]
+        let aspectRatio = listAspectRatios[indexPath.row]
         cell.configureCell(with: aspectRatio)
         cell.setSelected(selectedIndexPath == indexPath)
         return cell
@@ -76,7 +76,7 @@ final class AspectRatioViewController: UIViewController, UICollectionViewDataSou
             cell.setSelected(true)
         }
 
-        let selectedAspectRatio = aspectRatios[indexPath.row]
+        let selectedAspectRatio = listAspectRatios[indexPath.row]
         delegate?.didSelectAspectRatio(selectedAspectRatio.aspectRatio)
     }
 }

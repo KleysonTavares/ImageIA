@@ -154,7 +154,7 @@ final class HomeViewController: UIViewController {
     }
     
     private func updateAspectRatioButtonIcon() {
-           let options = AspectRatioViewController().aspectRatios
+           let options = AspectRatioViewController().listAspectRatios
            if let selectedAspectRatio = options.first(where: { $0.aspectRatio == self.selectedAspectRatio }) {
                homeView.aspectRatioButton.setImage(UIImage(named: selectedAspectRatio.image), for: .normal)
            }
