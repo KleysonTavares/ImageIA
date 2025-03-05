@@ -14,7 +14,9 @@ class ImageViewController: UIViewController, UICollectionViewDelegate, UICollect
     private var theView: ImageView {
         return view as! ImageView
     }
-    
+    private var isEditingMode = false
+    private var selectedImages = Set<Int>()
+
     override func loadView() {
         view = ImageView()
     }
@@ -26,6 +28,8 @@ class ImageViewController: UIViewController, UICollectionViewDelegate, UICollect
         theView.collectionView.delegate = self
         theView.collectionView.dataSource = self
         theView.collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Editar", style: .plain, target: self, action: #selector(toggleEditMode))
+        loadImagesFromAlbum()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -72,19 +76,70 @@ class ImageViewController: UIViewController, UICollectionViewDelegate, UICollect
             return images.count
         }
 
-        func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-            cell.backgroundColor = .white
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+        cell.backgroundColor = .white
 
-            let imageView = UIImageView(image: images[indexPath.item])
-            imageView.contentMode = .scaleAspectFill
-            imageView.clipsToBounds = true
-            imageView.frame = cell.bounds
-            imageView.layer.cornerRadius = 10
+        let imageView = UIImageView(image: images[indexPath.item])
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.frame = cell.bounds
+        imageView.layer.cornerRadius = 10
 
-            cell.contentView.subviews.forEach { $0.removeFromSuperview() } // Remove imagens antigas
-            cell.contentView.addSubview(imageView)
-            
-            return cell
+        cell.contentView.subviews.forEach { $0.removeFromSuperview() }
+        cell.contentView.addSubview(imageView)
+
+        // Se estiver no modo de edição, mostrar o overlay de seleção
+        if isEditingMode {
+            let overlay = UIView(frame: cell.bounds)
+            overlay.backgroundColor = selectedImages.contains(indexPath.item) ? UIColor.black.withAlphaComponent(0.5) : UIColor.clear
+            overlay.layer.cornerRadius = 10
+            overlay.tag = 99 // Identificação do overlay
+            cell.contentView.addSubview(overlay)
+        } else {
+            cell.contentView.viewWithTag(99)?.removeFromSuperview()
         }
+
+        return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard isEditingMode else { return }
+        
+        if selectedImages.contains(indexPath.item) {
+            selectedImages.remove(indexPath.item)
+        } else {
+            selectedImages.insert(indexPath.item)
+        }
+
+        navigationItem.leftBarButtonItem?.isEnabled = !selectedImages.isEmpty
+
+        collectionView.reloadItems(at: [indexPath])
+    }
+    
+    @objc private func toggleEditMode() {
+        isEditingMode.toggle()
+        selectedImages.removeAll()
+        
+        navigationItem.rightBarButtonItem?.title = isEditingMode ? "Cancelar" : "Editar"
+
+        if isEditingMode {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Excluir", style: .plain, target: self, action: #selector(deleteSelectedImages))
+            navigationItem.leftBarButtonItem?.isEnabled = false // Só ativa quando houver seleção
+        } else {
+            navigationItem.leftBarButtonItem = nil
+        }
+        
+        theView.collectionView.reloadData()
+    }
+    
+    @objc private func deleteSelectedImages() {
+        let sortedIndexes = selectedImages.sorted(by: >) // Ordenar para remover do final para o início
+        for index in sortedIndexes {
+            images.remove(at: index)
+        }
+        selectedImages.removeAll()
+        toggleEditMode() // Sai do modo de edição
+        theView.collectionView.reloadData()
+    }
+}
