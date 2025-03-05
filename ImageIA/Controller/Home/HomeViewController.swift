@@ -108,7 +108,9 @@ final class HomeViewController: UIViewController {
     }
 
     @objc private func goToImage(image: UIImage) {
-        delegate?.didTapSearchButton(image: image)
+        guard let watermarkImage = UIImage(named: "watermark") else { return }
+        let finalImage = Watermark().addWatermark(to: image, watermark: watermarkImage)
+        delegate?.didTapSearchButton(image: finalImage)
         stopLoading()
     }
 
