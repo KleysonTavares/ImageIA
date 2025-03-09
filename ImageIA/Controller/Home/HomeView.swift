@@ -15,6 +15,7 @@ final class HomeView: UIView {
     let inputPromptTextView = InputPromptTextView()
     let seachButton = UIButton()
     let loading = UIActivityIndicatorView()
+    let styleLabel = UILabel()
     let styleContainerView = UIView()
     let aspectRatioButton = UIButton()
     weak var delegate: HomeViewDelegate?
@@ -36,6 +37,7 @@ final class HomeView: UIView {
 extension HomeView: ViewCode {
     func addSubviews() {
         addSubview(aspectRatioButton)
+        addSubview(styleLabel)
         addSubview(styleContainerView)
         addSubview(loading)
         addSubview(inputPromptTextView)
@@ -43,6 +45,10 @@ extension HomeView: ViewCode {
     }
 
     func configure() {
+        styleLabel.translatesAutoresizingMaskIntoConstraints = false
+        styleLabel.text = "Estilo"
+        styleLabel.font = .systemFont(ofSize: 20, weight: .bold)
+        
         styleContainerView.translatesAutoresizingMaskIntoConstraints = false
         styleContainerView.backgroundColor = .clear
 
@@ -76,7 +82,10 @@ extension HomeView: ViewCode {
             aspectRatioButton.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             aspectRatioButton.widthAnchor.constraint(equalToConstant: 100),
             aspectRatioButton.heightAnchor.constraint(equalToConstant: 100),
-            aspectRatioButton.bottomAnchor.constraint(equalTo: styleContainerView.topAnchor, constant: -20),
+            aspectRatioButton.bottomAnchor.constraint(equalTo: styleLabel.topAnchor, constant: -20),
+
+            styleLabel.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            styleLabel.bottomAnchor.constraint(equalTo: styleContainerView.topAnchor, constant: -10),
 
             styleContainerView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             styleContainerView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
