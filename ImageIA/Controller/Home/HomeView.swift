@@ -15,10 +15,10 @@ final class HomeView: UIView {
     let inputPromptTextView = InputPromptTextView()
     let seachButton = UIButton()
     let loading = UIActivityIndicatorView()
+    let aspectLabel = UILabel()
+    let aspectRatioContainerView = UIView()
     let styleLabel = UILabel()
     let styleContainerView = UIView()
-    let aspectLabel = UILabel()
-    let aspectRatioButton = UIButton()
     weak var delegate: HomeViewDelegate?
 
     init() {
@@ -38,7 +38,7 @@ final class HomeView: UIView {
 extension HomeView: ViewCode {
     func addSubviews() {
         addSubview(aspectLabel)
-        addSubview(aspectRatioButton)
+        addSubview(aspectRatioContainerView)
         addSubview(styleLabel)
         addSubview(styleContainerView)
         addSubview(loading)
@@ -51,9 +51,8 @@ extension HomeView: ViewCode {
         aspectLabel.text = "Proporção da imagem"
         aspectLabel.font = .systemFont(ofSize: 20)
 
-        aspectRatioButton.translatesAutoresizingMaskIntoConstraints = false
-        aspectRatioButton.setImage(UIImage(named: "aspect_1_1"), for: .normal)
-        aspectRatioButton.tintColor = .black
+        aspectRatioContainerView.translatesAutoresizingMaskIntoConstraints = false
+        aspectRatioContainerView.backgroundColor = .clear
 
         styleLabel.translatesAutoresizingMaskIntoConstraints = false
         styleLabel.text = "Estilo"
@@ -86,12 +85,12 @@ extension HomeView: ViewCode {
             loading.centerYAnchor.constraint(equalTo: self.centerYAnchor),
 
             aspectLabel.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            aspectLabel.bottomAnchor.constraint(equalTo: aspectRatioButton.topAnchor, constant: -5),
+            aspectLabel.bottomAnchor.constraint(equalTo: aspectRatioContainerView.topAnchor, constant: -5),
 
-            aspectRatioButton.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            aspectRatioButton.widthAnchor.constraint(equalToConstant: 100),
-            aspectRatioButton.heightAnchor.constraint(equalToConstant: 100),
-            aspectRatioButton.bottomAnchor.constraint(equalTo: styleLabel.topAnchor, constant: -20),
+            aspectRatioContainerView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            aspectRatioContainerView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            aspectRatioContainerView.heightAnchor.constraint(equalToConstant: 140),
+            aspectRatioContainerView.bottomAnchor.constraint(equalTo: styleLabel.topAnchor, constant: -20),
 
             styleLabel.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             styleLabel.bottomAnchor.constraint(equalTo: styleContainerView.topAnchor, constant: -5),

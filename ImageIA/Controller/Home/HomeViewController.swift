@@ -9,7 +9,6 @@ import UIKit
 
 protocol HomeViewControllerDelegate: AnyObject {
     func didTapSearchButton(image: UIImage?)
-    func didTapAspecRatioButton(aspectRatio: String)
 }
 
 final class HomeViewController: UIViewController {
@@ -20,6 +19,7 @@ final class HomeViewController: UIViewController {
 
     private let homeView = HomeView()
     private let styleViewController = StyleViewController()
+    private let aspectRatioViewController = AspectRatioViewController()
     private let serviceDall_e = ServiceDall_e()
     private let serviceImagineArt = ServiceImagineArt()
 
@@ -34,8 +34,8 @@ final class HomeViewController: UIViewController {
         setupKeyboardObservers()
         setupTapGesture()
         addStyleViewController()
-        homeView.aspectRatioButton.addTarget(self, action: #selector(showAspectRatioModal), for: .touchUpInside)
-        updateAspectRatioButtonIcon() // Atualiza o ícone inicial
+        addAspectRatioViewController()
+        configLayoutAspectRatio()
         configLayoutStyle()
         configAdManager()
     }
@@ -128,6 +128,16 @@ final class HomeViewController: UIViewController {
         }
     }
     
+    func configLayoutAspectRatio() {
+        aspectRatioViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            aspectRatioViewController.view.topAnchor.constraint(equalTo: homeView.aspectRatioContainerView.topAnchor),
+            aspectRatioViewController.view.leadingAnchor.constraint(equalTo: homeView.aspectRatioContainerView.leadingAnchor),
+            aspectRatioViewController.view.trailingAnchor.constraint(equalTo: homeView.aspectRatioContainerView.trailingAnchor),
+            aspectRatioViewController.view.bottomAnchor.constraint(equalTo: homeView.aspectRatioContainerView.bottomAnchor)
+        ])
+    }
+    
     func configLayoutStyle() {
         styleViewController.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -155,16 +165,13 @@ final class HomeViewController: UIViewController {
         styleViewController.delegate = self
     }
     
-    private func updateAspectRatioButtonIcon() {
-           let options = AspectRatioViewController().listAspectRatios
-           if let selectedAspectRatio = options.first(where: { $0.aspectRatio == self.selectedAspectRatio }) {
-               homeView.aspectRatioButton.setImage(UIImage(named: selectedAspectRatio.image), for: .normal)
-           }
-       }
+    func addAspectRatioViewController() {
+        addChild(aspectRatioViewController)
+        homeView.aspectRatioContainerView.addSubview(aspectRatioViewController.view)
+        aspectRatioViewController.didMove(toParent: self)
+        aspectRatioViewController.delegate = self
+    }
 
-       @objc private func showAspectRatioModal() {
-           delegate?.didTapAspecRatioButton(aspectRatio: selectedAspectRatio)
-       }
 }
 
 extension HomeViewController: HomeViewDelegate {
@@ -186,6 +193,5 @@ extension HomeViewController: StyleViewControllerDelegate {
 extension HomeViewController: AspectRatioViewControllerDelegate {
     func didSelectAspectRatio(_ aspectRatio: String) {
         selectedAspectRatio = aspectRatio
-        updateAspectRatioButtonIcon()
     }
 }
