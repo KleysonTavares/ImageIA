@@ -22,6 +22,7 @@ final class HomeViewController: UIViewController {
     private let aspectRatioViewController = AspectRatioViewController()
     private let serviceDall_e = ServiceDall_e()
     private let serviceImagineArt = ServiceImagineArt()
+    private let counter = ImageGenerationCounter()
 
     override func loadView() {
         super.loadView()
@@ -38,6 +39,7 @@ final class HomeViewController: UIViewController {
         configLayoutAspectRatio()
         configLayoutStyle()
         configAdManager()
+        homeView.updateCounterLabel(count: counter.count)
     }
     
     deinit {
@@ -157,7 +159,25 @@ final class HomeViewController: UIViewController {
         }
         AdManager.shared.loadInterstitialAd()
     }
-    
+
+    func validCount() {
+         if counter.count > 0 {
+             counter.decrement()
+             homeView.updateCounterLabel(count: counter.count)
+             generateImage()
+         } else {
+             showErrorAlert(message: "Você atingiu o limite de tentativas!")
+         }
+     }
+
+    func generateImage() {
+        AdManager.shared.showInterstitialAd(from: self) // Exibe o anúncio
+        dismissKeyboard()
+        if let input = homeView.inputPromptTextView.textView.text {
+            inputPrompt = input
+        }
+    }
+
     func addStyleViewController() {
         addChild(styleViewController)
         homeView.styleContainerView.addSubview(styleViewController.view)
@@ -176,11 +196,7 @@ final class HomeViewController: UIViewController {
 
 extension HomeViewController: HomeViewDelegate {
     func didSeachButtonPressed() {
-        AdManager.shared.showInterstitialAd(from: self) // Exibe o anúncio
-        dismissKeyboard()
-        if let input = homeView.inputPromptTextView.textView.text {
-            inputPrompt = input
-        }
+        validCount()
     }
 }
 

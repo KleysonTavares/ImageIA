@@ -11,8 +11,8 @@ protocol AspectRatioViewControllerDelegate: AnyObject {
     func didSelectAspectRatio(_ aspectRatio: String)
 }
 
-class AspectRatioViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
+final class AspectRatioViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+
     weak var delegate: AspectRatioViewControllerDelegate?
 
     private var collectionView: UICollectionView!
@@ -43,11 +43,11 @@ class AspectRatioViewController: UIViewController, UICollectionViewDataSource, U
     }
     
     // MARK: - UICollectionViewDataSource
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return listAspectRatios.count
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AspectRatioCustomCell.identifier, for: indexPath) as! AspectRatioCustomCell
         let option = listAspectRatios[indexPath.row]
@@ -56,9 +56,9 @@ class AspectRatioViewController: UIViewController, UICollectionViewDataSource, U
         
         return cell
     }
-    
+
     // MARK: - UICollectionViewDelegate
-    
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let previousIndexPath = selectedIndexPath {
             if let previousCell = collectionView.cellForItem(at: previousIndexPath) as? AspectRatioCustomCell {

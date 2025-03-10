@@ -12,6 +12,7 @@ protocol HomeViewDelegate: AnyObject {
 }
 
 final class HomeView: UIView {
+    let counterLabel = UILabel()
     let inputPromptTextView = InputPromptTextView()
     let seachButton = UIButton()
     let loading = UIActivityIndicatorView()
@@ -33,10 +34,15 @@ final class HomeView: UIView {
     @objc internal func buttonPressed() {
         delegate?.didSeachButtonPressed()
     }
+    
+    func updateCounterLabel(count: Int) {
+            counterLabel.text = "Tentativas restantes: \(count)"
+        }
 }
 
 extension HomeView: ViewCode {
     func addSubviews() {
+        addSubview(counterLabel)
         addSubview(aspectLabel)
         addSubview(aspectRatioContainerView)
         addSubview(styleLabel)
@@ -47,6 +53,12 @@ extension HomeView: ViewCode {
     }
 
     func configure() {
+        counterLabel.translatesAutoresizingMaskIntoConstraints = false
+        counterLabel.text = "Imagens restantes: 5"
+        counterLabel.font = .boldSystemFont(ofSize: 22)
+        counterLabel.textAlignment = .center
+        counterLabel.textColor = .red
+
         aspectLabel.translatesAutoresizingMaskIntoConstraints = false
         aspectLabel.text = "Proporção da imagem"
         aspectLabel.font = .systemFont(ofSize: 20)
@@ -83,6 +95,9 @@ extension HomeView: ViewCode {
         NSLayoutConstraint.activate([
             loading.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             loading.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+
+            counterLabel.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10),
+            counterLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
 
             aspectLabel.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             aspectLabel.bottomAnchor.constraint(equalTo: aspectRatioContainerView.topAnchor, constant: -5),
