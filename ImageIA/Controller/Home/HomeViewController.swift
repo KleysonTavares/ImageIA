@@ -39,7 +39,7 @@ final class HomeViewController: UIViewController {
         configLayoutAspectRatio()
         configLayoutStyle()
         configAdManager()
-        homeView.updateCounterLabel(count: counter.count)
+        updateProgressView()
     }
     
     deinit {
@@ -163,7 +163,7 @@ final class HomeViewController: UIViewController {
     func validCount() {
          if counter.count > 0 {
              counter.decrement()
-             homeView.updateCounterLabel(count: counter.count)
+             updateProgressView()
              generateImage()
          } else {
              showErrorAlert(message: "Você atingiu o limite de tentativas!")
@@ -176,6 +176,11 @@ final class HomeViewController: UIViewController {
         if let input = homeView.inputPromptTextView.textView.text {
             inputPrompt = input
         }
+    }
+
+    func updateProgressView() {
+           let progress = CGFloat(counter.count) / 5.0
+           homeView.updateCounterView(progress: progress)
     }
 
     func addStyleViewController() {

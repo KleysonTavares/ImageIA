@@ -12,7 +12,7 @@ protocol HomeViewDelegate: AnyObject {
 }
 
 final class HomeView: UIView {
-    let counterLabel = UILabel()
+    let circularProgressView = CircularProgressView(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
     let inputPromptTextView = InputPromptTextView()
     let seachButton = UIButton()
     let loading = UIActivityIndicatorView()
@@ -34,15 +34,15 @@ final class HomeView: UIView {
     @objc internal func buttonPressed() {
         delegate?.didSeachButtonPressed()
     }
-    
-    func updateCounterLabel(count: Int) {
-            counterLabel.text = "Tentativas restantes: \(count)"
-        }
+
+    func updateCounterView(progress: CGFloat) {
+            circularProgressView.progress = progress
+    }
 }
 
 extension HomeView: ViewCode {
     func addSubviews() {
-        addSubview(counterLabel)
+        addSubview(circularProgressView)
         addSubview(aspectLabel)
         addSubview(aspectRatioContainerView)
         addSubview(styleLabel)
@@ -53,11 +53,7 @@ extension HomeView: ViewCode {
     }
 
     func configure() {
-        counterLabel.translatesAutoresizingMaskIntoConstraints = false
-        counterLabel.text = "Imagens restantes: 5"
-        counterLabel.font = .boldSystemFont(ofSize: 22)
-        counterLabel.textAlignment = .center
-        counterLabel.textColor = .red
+        circularProgressView.translatesAutoresizingMaskIntoConstraints = false
 
         aspectLabel.translatesAutoresizingMaskIntoConstraints = false
         aspectLabel.text = "Proporção da imagem"
@@ -69,17 +65,17 @@ extension HomeView: ViewCode {
         styleLabel.translatesAutoresizingMaskIntoConstraints = false
         styleLabel.text = "Estilo"
         styleLabel.font = .systemFont(ofSize: 20)
-        
+
         styleContainerView.translatesAutoresizingMaskIntoConstraints = false
         styleContainerView.backgroundColor = .clear
 
         loading.translatesAutoresizingMaskIntoConstraints = false
         loading.style = .large
         loading.color = .purple
-        
+
         inputPromptTextView.translatesAutoresizingMaskIntoConstraints = false
         inputPromptTextView.placeholder = "de asas a sua imaginação..."
-        
+
         seachButton.translatesAutoresizingMaskIntoConstraints = false
         seachButton.setTitle("Gerar Imagem", for: .normal)
         seachButton.setTitleColor(.white, for: .normal)
@@ -96,8 +92,10 @@ extension HomeView: ViewCode {
             loading.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             loading.centerYAnchor.constraint(equalTo: self.centerYAnchor),
 
-            counterLabel.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10),
-            counterLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            circularProgressView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10),
+            circularProgressView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            circularProgressView.widthAnchor.constraint(equalToConstant: 60),
+            circularProgressView.heightAnchor.constraint(equalToConstant: 60),
 
             aspectLabel.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             aspectLabel.bottomAnchor.constraint(equalTo: aspectRatioContainerView.topAnchor, constant: -5),
