@@ -26,7 +26,7 @@ class TabBarCoordinator: Coordinator {
         homeCoordinator?.start()
 
         guard let homeNavigationController = homeCoordinator?.navigationController else { return }
-        homeNavigationController.tabBarItem = UITabBarItem(title: "Criar", image: UIImage(systemName: "house"), tag: 0)
+        homeNavigationController.tabBarItem = UITabBarItem(title: "Criar", image: UIImage(systemName: "plus.app.fill"), tag: 0)
 
         let imageVC = ImageViewController()
         self.imageViewController = imageVC // 🔹 Armazena referência para passar a imagem depois
