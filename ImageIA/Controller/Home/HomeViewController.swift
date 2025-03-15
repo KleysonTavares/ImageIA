@@ -47,24 +47,29 @@ final class HomeViewController: UIViewController {
     }
 
     func searchImagineArt(input: String, style: String, aspectRatio: String) {
-        startLoading()
-        if promptDuplicate(prompt: input) == false {
-            serviceImagineArt.generateImage(prompt: input, style: style, aspectRatio: aspectRatio) { data in
-                if let data = data, let image = UIImage(data: data) {
-                    self.goToImage(image: image)
-                    UserDefaults.standard.set(input, forKey: "savedImageURL")
-                } else {
-                    self.showErrorAlert(message: "Não foi possível gerar a imagem. Tente novamente mais tarde.")
+            let modalVC = ImageModalViewController()
+            present(modalVC, animated: true) {
+                self.serviceImagineArt.generateImage(prompt: input, style: style, aspectRatio: aspectRatio) { data in
+                    if let data = data, let image = UIImage(data: data) {
+                        DispatchQueue.main.async {
+                            modalVC.image = self.addWaterMArk(image: image)
+                            UserDefaults.standard.set(input, forKey: "savedImageURL")
+                        }
+                    } else {
+                        DispatchQueue.main.async {
+                            modalVC.dismiss(animated: true) {
+                                self.showErrorAlert(message: "Não foi possível gerar a imagem. Tente novamente mais tarde.")
+                            }
+                        }
+                    }
                 }
             }
         }
-    }
     
     func promptDuplicate(prompt: String) -> Bool {
         if let savedUrl = UserDefaults.standard.string(forKey: "savedImageURL") {
             if savedUrl == prompt || prompt.isEmpty {
                 showErrorAlert(message: "favor, digite uma imagem diferente")
-                stopLoading()
             } else {
                 return false
             }
@@ -109,25 +114,11 @@ final class HomeViewController: UIViewController {
         }
     }
 
-    @objc private func goToImage(image: UIImage) {
-        guard let watermarkImage = UIImage(named: "watermark") else { return }
+    func addWaterMArk(image: UIImage) -> UIImage {
+        guard let watermarkImage = UIImage(named: "watermark") else { return image }
         let finalImage = Watermark().addWatermark(to: image, watermark: watermarkImage)
-        delegate?.didTapSearchButton(image: finalImage)
-        stopLoading()
-    }
 
-    func startLoading() {
-        DispatchQueue.main.async { [weak self] in
-            self?.homeView.loading.startAnimating()
-            self?.homeView.seachButton.isEnabled = false
-        }
-    }
-
-    func stopLoading() {
-        DispatchQueue.main.async { [weak self] in
-            self?.homeView.loading.stopAnimating()
-            self?.homeView.seachButton.isEnabled = true
-        }
+        return finalImage
     }
     
     func configLayoutAspectRatio() {
@@ -151,14 +142,14 @@ final class HomeViewController: UIViewController {
     }
     
     func configAdManager() {
-        AdManager.shared.onAdDidDismiss = { [weak self] in
-            guard let self = self else { return }
-            if let input = self.inputPrompt {
-                self.searchImagineArt(input: input, style: selectedStyle, aspectRatio: selectedAspectRatio)
+            AdManager.shared.onAdDidDismiss = { [weak self] in
+                guard let self = self else { return }
+                if let input = self.inputPrompt {
+                    self.searchImagineArt(input: input, style: selectedStyle, aspectRatio: selectedAspectRatio)
+                }
             }
+            AdManager.shared.loadInterstitialAd()
         }
-        AdManager.shared.loadInterstitialAd()
-    }
 
     func validCount() {
          if counter.count > 0 {
@@ -171,12 +162,12 @@ final class HomeViewController: UIViewController {
      }
 
     func generateImage() {
-        AdManager.shared.showInterstitialAd(from: self) // Exibe o anúncio
-        dismissKeyboard()
-        if let input = homeView.inputPromptTextView.textView.text {
-            inputPrompt = input
+            AdManager.shared.showInterstitialAd(from: self) // Exibe o anúncio
+            dismissKeyboard()
+            if let input = homeView.inputPromptTextView.textView.text {
+                inputPrompt = input
+            }
         }
-    }
 
     func updateProgressView() {
            let progress = CGFloat(counter.count) / 5.0
@@ -201,7 +192,12 @@ final class HomeViewController: UIViewController {
 
 extension HomeViewController: HomeViewDelegate {
     func didSeachButtonPressed() {
-        validCount()
+        guard let input = homeView.inputPromptTextView.textView.text else { return }
+        inputPrompt = input
+
+        if promptDuplicate(prompt: input) == false {
+            validCount()
+        }
     }
 }
 
