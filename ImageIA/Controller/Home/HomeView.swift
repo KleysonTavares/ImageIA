@@ -15,7 +15,6 @@ final class HomeView: UIView {
     let circularProgressView = CircularProgressView(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
     let inputPromptTextView = InputPromptTextView()
     let seachButton = UIButton()
-    let loading = UIActivityIndicatorView()
     let aspectLabel = UILabel()
     let aspectRatioContainerView = UIView()
     let styleLabel = UILabel()
@@ -47,7 +46,6 @@ extension HomeView: ViewCode {
         addSubview(aspectRatioContainerView)
         addSubview(styleLabel)
         addSubview(styleContainerView)
-        addSubview(loading)
         addSubview(inputPromptTextView)
         addSubview(seachButton)
     }
@@ -69,10 +67,6 @@ extension HomeView: ViewCode {
         styleContainerView.translatesAutoresizingMaskIntoConstraints = false
         styleContainerView.backgroundColor = .clear
 
-        loading.translatesAutoresizingMaskIntoConstraints = false
-        loading.style = .large
-        loading.color = .purple
-
         inputPromptTextView.translatesAutoresizingMaskIntoConstraints = false
         inputPromptTextView.placeholder = "de asas a sua imaginação..."
 
@@ -89,8 +83,6 @@ extension HomeView: ViewCode {
 
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            loading.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            loading.centerYAnchor.constraint(equalTo: self.centerYAnchor),
 
             circularProgressView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10),
             circularProgressView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -20),
