@@ -6,7 +6,8 @@
 //
 
 struct AspectRatio {
-    let aspectRatio: String
+    let aspectImagine: String
+    let aspectDalle: String
     let image: String
     let label: String
 }

@@ -19,12 +19,12 @@ final class AspectRatioViewController: UIViewController, UICollectionViewDataSou
     private var selectedIndexPath: IndexPath? = IndexPath(row: 0, section: 0)
     
     private let listAspectRatios: [AspectRatio] = [
-        AspectRatio(aspectRatio: "1:1", image: "aspect_1_1", label: "1:1"),
-        AspectRatio(aspectRatio: "3:2", image: "aspect_3_2", label: "3:2"),
-        AspectRatio(aspectRatio: "4:3", image: "aspect_4_3", label: "4:3"),
-        AspectRatio(aspectRatio: "3:4", image: "aspect_3_4", label: "3:4"),
-        AspectRatio(aspectRatio: "16:9", image: "aspect_16_9", label: "16:9"),
-        AspectRatio(aspectRatio: "9:16", image: "aspect_9_16", label: "9:16")
+        AspectRatio(aspectImagine: "1:1", aspectDalle: "1024x1024", image: "aspect_1_1", label: "1:1"),
+        AspectRatio(aspectImagine: "3:2", aspectDalle: "1792x1024", image: "aspect_3_2", label: "3:2"),
+        AspectRatio(aspectImagine: "4:3", aspectDalle: "1792x1024", image: "aspect_4_3", label: "4:3"),
+        AspectRatio(aspectImagine: "3:4", aspectDalle: "1024x1792", image: "aspect_3_4", label: "3:4"),
+        AspectRatio(aspectImagine: "16:9", aspectDalle: "1792x10244", image: "aspect_16_9", label: "16:9"),
+        AspectRatio(aspectImagine: "9:16", aspectDalle: "1024x1792", image: "aspect_9_16", label: "9:16")
     ]
     
     override func viewDidLoad() {
@@ -70,7 +70,7 @@ final class AspectRatioViewController: UIViewController, UICollectionViewDataSou
             cell.setSelected(true)
         }
         let selectedOption = listAspectRatios[indexPath.row]
-        delegate?.didSelectAspectRatio(selectedOption.aspectRatio)
+        delegate?.didSelectAspectRatio(selectedOption.aspectImagine)
     }
 }
 
