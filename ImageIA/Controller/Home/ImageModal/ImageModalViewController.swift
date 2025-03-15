@@ -12,6 +12,8 @@ class ImageModalViewController: UIViewController {
     var image: UIImage? {
         didSet {
             imageView.image = image
+            loadingIndicator.stopAnimating() // Parar a animação quando a imagem é carregada
+            showButtons() // Exibir os botões e labels após o carregamento
         }
     }
     
@@ -22,12 +24,21 @@ class ImageModalViewController: UIViewController {
         return iv
     }()
 
+    private let loadingIndicator: UIActivityIndicatorView = {
+           let indicator = UIActivityIndicatorView(style: .large)
+           indicator.color = .white
+           indicator.translatesAutoresizingMaskIntoConstraints = false
+           indicator.hidesWhenStopped = true
+           return indicator
+       }()
+
     private let saveButton: UIButton = {
         let button = UIButton(type: .system)
         let image = UIImage(systemName: "square.and.arrow.down")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 30, weight: .medium))
         button.setImage(image, for: .normal)
         button.addTarget(self, action: #selector(saveImage), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.isHidden = true // Ocultar inicialmente
         return button
     }()
 
@@ -37,6 +48,7 @@ class ImageModalViewController: UIViewController {
         button.setImage(image, for: .normal)
         button.addTarget(self, action: #selector(shareImage), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.isHidden = true // Ocultar inicialmente
         return button
     }()
 
@@ -46,6 +58,7 @@ class ImageModalViewController: UIViewController {
         button.setImage(image, for: .normal)
         button.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.isHidden = true // Ocultar inicialmente
         return button
     }()
 
@@ -56,6 +69,7 @@ class ImageModalViewController: UIViewController {
         label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.isHidden = true // Ocultar inicialmente
         return label
     }()
 
@@ -66,6 +80,7 @@ class ImageModalViewController: UIViewController {
         label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.isHidden = true // Ocultar inicialmente
         return label
     }()
     
@@ -76,6 +91,7 @@ class ImageModalViewController: UIViewController {
         label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.isHidden = true // Ocultar inicialmente
         return label
     }()
     
@@ -83,6 +99,7 @@ class ImageModalViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor.black.withAlphaComponent(0.8)
         setupLayout()
+        loadingIndicator.startAnimating() // Iniciar a animação ao carregar a view
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -91,6 +108,7 @@ class ImageModalViewController: UIViewController {
 
     private func setupLayout() {
         view.addSubview(imageView)
+        view.addSubview(loadingIndicator)
         view.addSubview(saveButton)
         view.addSubview(shareButton)
         view.addSubview(closeButton)
@@ -99,6 +117,10 @@ class ImageModalViewController: UIViewController {
         view.addSubview(closeLabel)
         
         NSLayoutConstraint.activate([
+            
+            loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -50),
             imageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9),
@@ -126,6 +148,16 @@ class ImageModalViewController: UIViewController {
             closeLabel.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 5)
         ])
     }
+    
+    private func showButtons() {
+            // Exibir os botões e labels após o carregamento da imagem
+            saveButton.isHidden = false
+            shareButton.isHidden = false
+            closeButton.isHidden = false
+            saveLabel.isHidden = false
+            shareLabel.isHidden = false
+            closeLabel.isHidden = false
+        }
     
     @objc private func saveImage() {
         guard let imageTemp = image else { return }
