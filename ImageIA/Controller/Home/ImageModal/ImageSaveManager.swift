@@ -38,10 +38,10 @@ final class ImageSaveManager {
         }
     }
 
-    static func saveImageToAppAlbum(_ image: UIImage) {
+    static func saveImageToAppAlbum(_ image: UIImage, completion: @escaping (Bool) -> Void) {
         createAlbumIfNeeded { album in
             guard let album = album else {
-                print("⚠️ Falha ao acessar o álbum.")
+                completion(false)
                 return
             }
             if imageAuthorized() {
@@ -56,13 +56,15 @@ final class ImageSaveManager {
                     }
                 }) { success, error in
                     if success {
-                        print("✅ Imagem salva no álbum específico.")
+                        completion(true)
                     } else {
                         print("⚠️ Erro ao salvar a imagem: \(error?.localizedDescription ?? "Desconhecido")")
+                        completion(false)
                     }
                 }
+            } else {
+                completion(false)
             }
-            
         }
     }
     

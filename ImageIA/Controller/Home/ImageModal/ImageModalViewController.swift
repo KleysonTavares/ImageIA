@@ -95,6 +95,17 @@ class ImageModalViewController: UIViewController {
         return label
     }()
     
+    private let savedImageLabel: UILabel = {
+          let label = UILabel()
+          label.text = "Imagem salva na galeria"
+          label.textColor = .white
+          label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+          label.textAlignment = .center
+          label.translatesAutoresizingMaskIntoConstraints = false
+          label.isHidden = true // Ocultar inicialmente
+          return label
+      }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.black.withAlphaComponent(0.8)
@@ -115,6 +126,7 @@ class ImageModalViewController: UIViewController {
         view.addSubview(saveLabel)
         view.addSubview(shareLabel)
         view.addSubview(closeLabel)
+        view.addSubview(savedImageLabel)
         
         NSLayoutConstraint.activate([
             
@@ -145,7 +157,10 @@ class ImageModalViewController: UIViewController {
             closeButton.heightAnchor.constraint(equalToConstant: 50),
 
             closeLabel.centerXAnchor.constraint(equalTo: closeButton.centerXAnchor),
-            closeLabel.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 5)
+            closeLabel.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 5),
+            
+            savedImageLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            savedImageLabel.bottomAnchor.constraint(equalTo: shareButton.topAnchor, constant: -20)
         ])
     }
     
@@ -160,9 +175,17 @@ class ImageModalViewController: UIViewController {
         }
     
     @objc private func saveImage() {
-        guard let imageTemp = image else { return }
-        ImageSaveManager.saveImageToAppAlbum(imageTemp)
-    }
+            guard let imageTemp = image else { return }
+            ImageSaveManager.saveImageToAppAlbum(imageTemp) { [weak self] success in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    if success {
+                        self.savedImageLabel.isHidden = false // Exibir a label de sucesso
+                        self.saveButton.isEnabled = false // Desabilitar o botão de salvar
+                    }
+                }
+            }
+        }
 
     @objc private func shareImage() {
         guard let image = image else { return }
